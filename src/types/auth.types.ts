@@ -1,30 +1,32 @@
-import { Dispatch, SetStateAction } from "react";
 
-export interface Auth {
-    user: User,
-    tokens: Tokens
+export interface AuthType {
+    user: UserType,
 }
 
-export type User = {
+export interface OtpType {
+    code: string,
+}
+
+export type UserType = {
     id: string,
     name: string,
     email: string,
     roles: string[],
 }
 
-export type UserList = Omit<User, 'roles' | 'name'>;
+export type UserList = Omit<UserType, 'roles' | 'name'>;
 
 export type Token = string;
 
-export type Tokens = {
-    access_token:Token,
-    refresh_token:Token,
+export type TokensType = {
+    access_token:string,
+    refresh_token:string,
     expiresIn: Date,
 }
 
 export interface AuthContextType {
-    auth: Auth | null
-    setAuth: React.Dispatch<React.SetStateAction<Auth | null>>;
-    logIn: (data:Auth) => void;
+    auth: UserType | null
+    setAuth: React.Dispatch<React.SetStateAction<UserType | null>>;
+    logIn: (data:UserType) => void;
     logOut: () => void;
 }

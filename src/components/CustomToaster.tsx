@@ -3,14 +3,14 @@ import toast, { ToastBar, Toaster } from 'react-hot-toast';
 
 const CustomToaster = () => {
     return (
-        <div>
+        <>
             <Toaster toastOptions={{
-                className:"max-w-lg p-0 flex justify-center items-center"
+                className:"w-full max-w-2xl p-0 flex justify-center items-center"
             }}>
                 {(t) => (
                     <ToastBar toast={t}>
                         {({ icon, message }) => (
-                            <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} flex justify-center items-center w-ful bg-white rounded-lg pointer-events-auto`}
+                            <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} flex justify-center items-center w-full bg-white rounded-lg pointer-events-auto`}
                             >
                                 <div className="flex items-center justify-center">
                                     <div className="mx-10">
@@ -34,7 +34,7 @@ const CustomToaster = () => {
                 </ToastBar>
                 )}
             </Toaster>
-        </div>
+        </>
     )
 };
 

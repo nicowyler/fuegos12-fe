@@ -1,41 +1,42 @@
-import { Routes, Route } from 'react-router-dom';
-import Login from '@/pages/Login';
-import Layout from '@/pages/Layout';
-import Register from '@/pages/Register';
-import LinkPage from '@/pages/LinkPage';
-import Unauthorized from '@/pages/Unauthorized';
-import RequireAuth from '@/pages/RequireAuth';
-import Home from '@/pages/Home';
-import Admin from '@/pages/Admin';
-import Missing from '@/pages/Missing';
+import { Routes, Route, redirect } from 'react-router-dom';
 import { Role } from '@/constants';
+import React from 'react';
+import LayoutAuth from '@/pages/LayoutAuth';
+import RequireAuth from '@/pages/RequireAuth';
+import Layout from '@/pages/Layout';
+import Authentificated from '@/pages/Authentificated';
+import * as path from 'path';
+
+const Home = React.lazy(() => import("@/pages/Home"));
+const Login = React.lazy(() => import("@/pages/Login"));
+const Register = React.lazy(() => import("@/pages/Register"));
+const Otp = React.lazy(() => import("@/pages/Otp"));
+const Page404 = React.lazy(() => import("@/pages/Page404"));
+const Unauthorized = React.lazy(() => import("@/pages/Unauthorized"));
 
 function App() {
 
   return (
-        <Routes>
-          {/* without layout */}
+    <Routes>
+
+      <Route element={<Authentificated/>}>
+        <Route element={<LayoutAuth />}>
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
+          <Route path="otp" element={<Otp />} />
+        </Route>
+      </Route>
 
-          <Route path="/" element={<Layout />}>
-            {/* public routes */}
-            <Route path="linkpage" element={<LinkPage />} />
-            <Route path="unauthorized" element={<Unauthorized />} />
 
-            {/* we want to protect these routes */}
-            <Route element={<RequireAuth allowedRoles={[Role.PROVIDER]} />}>
-              <Route path="/" element={<Home />} />
-            </Route>
-
-            <Route element={<RequireAuth allowedRoles={[Role.PROVIDER]} />}>
-              <Route path="admin" element={<Admin />} />
-            </Route>
-
-            {/* catch all */}
-            <Route path="*" element={<Missing />} />
-          </Route>
-        </Routes>
+      <Route path="/" element={<Layout />}>
+        <Route element={<RequireAuth allowedRoles={[Role.USER]} />}>
+          <Route index element={<Home />} />
+        </Route>
+        <Route path="unauthorized" element={<Unauthorized />} />
+      </Route>
+      {/* catch all */}
+      <Route path="*" element={<Page404 />} />
+    </Routes>
   );
 }
 

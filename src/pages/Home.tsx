@@ -1,24 +1,36 @@
-import { Link } from "react-router-dom";
-import useAuth from "@/hooks/useAuth";
+import { axiosPrivate } from "@/api/axios"
+import { useEffect } from "react"
 
 const Home = () => {
-    const { logOut } = useAuth();
+
+    const getUsers = async ()=>{
+        const response = await axiosPrivate.get('api/user');
+        console.log(response)
+    }
+
+    useEffect(()=>{
+        getUsers();
+    },[])
 
     return (
         <section>
-            <h1>Home</h1>
-            <br />
-            <p>You are logged in!</p>
-            <br />
-            <Link to="/editor">Go to the Editor page</Link>
-            <br />
-            <Link to="/admin">Go to the Admin page</Link>
-            <br />
-            <Link to="/lounge">Go to the Lounge</Link>
-            <br />
-            <Link to="/linkpage">Go to the link page</Link>
-            <div className="flexGrow">
-                <button onClick={logOut}>Sign Out</button>
+            <div className="container mx-auto flex flex-wrap justify-between items-center">
+                <div className="card w-1/3 h-72 m-2 border border-gray-300 rounded-xl shadow-md">
+                    <img src="carbon.jpg" alt="Carbón" className="w-full h-48 object-cover rounded-t-xl"/>
+                        <div className="p-4">
+                            <p className="font-bold text-xl mb-2">Carbón de 8kg</p>
+                            <p className="text-red-500 text-lg mb-2">$2.500</p>
+                            <a href="#" className="block w-full h-10 bg-gray-900 text-white text-lg text-center leading-10 rounded-b-xl cursor-pointer">Comprar ahora</a>
+                        </div>
+                </div>
+                <div className="card w-1/3 h-72 m-2 border border-gray-300 rounded-xl shadow-md">
+                    <img src="lena.jpg" alt="Leña" className="w-full h-48 object-cover rounded-t-xl"/>
+                        <div className="p-4">
+                            <p className="font-bold text-xl mb-2">Leña quebracho colorado x10kg</p>
+                            <p className="text-red-500 text-lg mb-2">$1.500</p>
+                            <a href="#" className="block w-full h-10 bg-gray-900 text-white text-lg text-center leading-10 rounded-b-xl cursor-pointer">Comprar ahora</a>
+                        </div>
+                </div>
             </div>
         </section>
     )

@@ -4,10 +4,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { ApiAuth } from "@/api";
 import useAuth from "@/hooks/useAuth";
 import { isApiResponse, isErrorMessage } from "@/api/guards";
-import { Auth } from "@/types";
+import { AuthType, Response, User, UserType } from '@/types';
 import CustomToaster from "@/components/CustomToaster";
 import toast from "react-hot-toast";
 import { ErrorMessage } from '@hookform/error-message';
+import Logo from "@/components/Logo";
 
 const LoginSchema = z.object({
     email: z.string().min(1, { message: "Tienes que completar este campo!" }).email("Ingresa un email valido!"),
@@ -28,57 +29,55 @@ const Login = () => {
 
         if (isErrorMessage(response)) {
             toast.error(response);
-        } else if (isApiResponse<Auth>(response)) {
-            const { data } = response.data;
-            logIn(data);
+        } else if (isApiResponse<UserType>(response)) {
+            const {data} = response.data;
+            logIn(data.user);
         }
     }
 
     return (
-        <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+        <div className="flex min-h-full flex-1 flex-col justify-start pt-[10%] lg:pt-0 lg:justify-center px-6 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <img
-                    className="mx-auto h-10 w-auto"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                    alt="Your Company"
-                />
-                <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                    Sign in to your account
+                <Logo/>
+                <h2 className="text-center text-3xl font-title font-bold tracking-widest uppercase text-f12-creame">
+                    Ingresa a tu cuenta
                 </h2>
             </div>
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                    <div>
-                        <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-                            Email address
+                <form onSubmit={handleSubmit((data) => onSubmit(data))} className="space-y-6">
+                    {/* EMAIL */}
+                    <div className="h-[70px]">
+                        <label htmlFor="email" className="block text-sm font-medium leading-6 text-f12-creame">
+                            Email
                         </label>
-                        <div className="mt-2">
-                            <input className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        <div>
+                            <input className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
                             { ...register("email")} />
                             <ErrorMessage errors={errors} name="email"
                                 render={({ message }) =>
-                                    <p className="text-red-700 text-sm pt-1">{message}</p>
+                                    <p className="text-red-400 text-sm pt-1">{message}</p>
                                 }
                             />
                         </div>
                     </div>
-                    <div>
+                    {/* CONTRASEÑA */}
+                    <div className="h-[70px]">
                         <div className="flex items-center justify-between">
-                            <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
-                                Password
+                            <label htmlFor="password" className="block text-sm font-medium leading-6 text-f12-creame">
+                                Contraseña
                             </label>
                             <div className="text-sm">
-                                <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                                    Forgot password?
+                                <a href="/forgot-password" className="font-semibold text-f12-blue hover:text-f12-blue-light">
+                                    Olvidaste la contraseña?
                                 </a>
                             </div>
                         </div>
-                        <div className="mt-2">
-                            <input className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        <div>
+                            <input className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
                                 {...register("password")} type="password" />
                             <ErrorMessage errors={errors} name="password"
                                 render={({ message }) =>
-                                    <p className="text-red-700 text-sm pt-1">{message}</p>
+                                    <p className="text-red-400 text-sm pt-1">{message}</p>
                                 }
                             />
                         </div>
@@ -87,15 +86,15 @@ const Login = () => {
                     <div>
                         <button
                             type="submit"
-                            className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                            className="mt-10 flex w-full justify-center rounded-md bg-f12-orange px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-f12-orange-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
-                            Sign in
+                            Entrar
                         </button>
                     </div>
                 </form>
-                <p className="mt-10 text-center text-sm text-gray-500">
+                <p className="mt-10 text-center text-sm text-f12-creame">
                     No tenes una cuenta?{' '}
-                    <a href="#" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+                    <a href="/register" className="font-semibold leading-6 text-f12-blue hover:text-f12-blue-light">
                         Registrate
                     </a>
                 </p>

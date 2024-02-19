@@ -1,181 +1,176 @@
-import { useRef, useState, useEffect } from "react";
-import axios from '../api/axios';
-import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form"
+import * as z from "zod";
+import { zodResolver } from '@hookform/resolvers/zod';
+import useAuth from "@/hooks/useAuth";
+import CustomToaster from "@/components/CustomToaster";
+import { ErrorMessage } from '@hookform/error-message';
+import UseUserStore from "@/store/user.store";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { ApiAuth } from "@/api";
+import { isApiResponse, isErrorMessage } from "@/api/guards";
+import { AuthType, Response } from "@/types";
+import Logo from "@/components/Logo";
 
-const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
-const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-const REGISTER_URL = '/register';
+const phoneRegex = new RegExp('^(?=.{10}$)');
 
-const Register = () => {
-    const userRef = useRef();
-    const errRef = useRef();
+const RegisterSchema = z.object({
+    email: z.string().min(1, { message: "Tienes que completar este campo!" }).email("Ingresa un email valido!"),
+    password: z.string().min(6, { message: "Tiene que tener al menos 6 caracteres!" }),
+    phoneNumber: z.string().regex(phoneRegex, 'Numbero Invalido!'),
+    firstName: z.string().min(3, { message: "El nombre no es valido!" }),
+    lastName: z.string().min(1, { message: "Ingresa tu apellido" }),
+});
 
-    const [user, setUser] = useState('');
-    const [validName, setValidName] = useState(false);
-    const [userFocus, setUserFocus] = useState(false);
+export type RegisterSchemaType = z.infer<typeof RegisterSchema>
 
-    const [pwd, setPwd] = useState('');
-    const [validPwd, setValidPwd] = useState(false);
-    const [pwdFocus, setPwdFocus] = useState(false);
+const Login = () => {
+    const { logIn } = useAuth();
+    const userState = UseUserStore();
+    const navigate = useNavigate();
 
-    const [matchPwd, setMatchPwd] = useState('');
-    const [validMatch, setValidMatch] = useState(false);
-    const [matchFocus, setMatchFocus] = useState(false);
 
-    const [errMsg, setErrMsg] = useState('');
-    const [success, setSuccess] = useState(false);
+    const { register, handleSubmit, formState: { errors } } = useForm<RegisterSchemaType>({
+        resolver: zodResolver(RegisterSchema),
+    })
 
-    useEffect(() => {
-        userRef.current.focus();
-    }, [])
+    const onSubmit = async (fields: RegisterSchemaType) => {
+        fields.phoneNumber = `+549${fields.phoneNumber}`;
+        const response:Response<AuthType> = await ApiAuth.register(fields);
 
-    useEffect(() => {
-        setValidName(USER_REGEX.test(user));
-    }, [user])
+        userState.saveUser({
+            email: fields.email,
+            fullName: {
+                firstName: fields.firstName,
+                lastName: fields.lastName
+            },
+            phone: fields.phoneNumber
+        })
 
-    useEffect(() => {
-        setValidPwd(PWD_REGEX.test(pwd));
-        setValidMatch(pwd === matchPwd);
-    }, [pwd, matchPwd])
-
-    useEffect(() => {
-        setErrMsg('');
-    }, [user, pwd, matchPwd])
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        // if button enabled with JS hack
-        const v1 = USER_REGEX.test(user);
-        const v2 = PWD_REGEX.test(pwd);
-        if (!v1 || !v2) {
-            setErrMsg("Invalid Entry");
-            return;
-        }
-        try {
-            const response = await axios.post(REGISTER_URL,
-                JSON.stringify({ user, pwd }),
-                {
-                    headers: { 'Content-Type': 'application/json' },
-                    withCredentials: true
-                }
-            );
-            // TODO: remove console.logs before deployment
-            console.log(JSON.stringify(response?.data));
-            //console.log(JSON.stringify(response))
-            setSuccess(true);
-            //clear state and controlled inputs
-            setUser('');
-            setPwd('');
-            setMatchPwd('');
-        } catch (err) {
-            if (!err?.response) {
-                setErrMsg('No Server Response');
-            } else if (err.response?.status === 409) {
-                setErrMsg('Username Taken');
-            } else {
-                setErrMsg('Registration Failed')
-            }
-            errRef.current.focus();
+        if (isErrorMessage(response)) {
+            toast.error(response);
+        } else if (isApiResponse<AuthType>(response)) {
+            const { data } = response.data;
+            logIn(data);
+            navigate('/otp');
         }
     }
 
     return (
-        <>
-            {success ? (
-                <section>
-                    <h1>Success!</h1>
-                    <p>
-                        <a href="#">Sign In</a>
-                    </p>
-                </section>
-            ) : (
-                <section>
-                    <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
-                    <h1>Register</h1>
-                    <form onSubmit={handleSubmit}>
-                        <label htmlFor="username">
-                            Username:
-                            {/* <FontAwesomeIcon icon={faCheck} className={validName ? "valid" : "hide"} />
-                            <FontAwesomeIcon icon={faTimes} className={validName || !user ? "hide" : "invalid"} /> */}
+        <div className="flex min-h-full flex-1 flex-col justify-start pt-[5 %] lg:pt-0 lg:justify-center px-6 lg:px-8">
+        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+            <Logo/>
+            <h2 className="text-center text-3xl font-title font-bold tracking-widest uppercase text-f12-creame">
+                Ingresa a tu cuenta
+            </h2>
+        </div>
+            <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                    <div className="flex flex-row gap-4 h-[70px]">
+                        {/* Nombre */}
+                        <div>
+                            <label htmlFor="email" className="block text-sm font-medium leading-6 text-f12-creame">
+                                Nombre
+                            </label>
+                            <div>
+                                <input className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
+                                { ...register("firstName")} placeholder="Juan Carlos"/>
+                                <ErrorMessage errors={errors} name="firstName"
+                                    render={({ message }) =>
+                                        <p className="text-red-400 text-sm pt-1">{message}</p>
+                                    }
+                                />
+                            </div>
+                        </div>
+                        {/* Apellido */}
+                        <div>
+                            <label htmlFor="email" className="block text-sm font-medium leading-6 text-f12-creame">
+                                Apellido
+                            </label>
+                            <div>
+                                <input className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
+                                { ...register("lastName")} placeholder="Madero"/>
+                                <ErrorMessage errors={errors} name="lastName"
+                                    render={({ message }) =>
+                                        <p className="text-red-400 text-sm pt-1">{message}</p>
+                                    }
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    {/* EMAIL */}
+                    <div className="h-[70px]">
+                        <label htmlFor="email" className="block text-sm font-medium leading-6 text-f12-creame">
+                            Email
                         </label>
-                        <input
-                            type="text"
-                            id="username"
-                            ref={userRef}
-                            autoComplete="off"
-                            onChange={(e) => setUser(e.target.value)}
-                            value={user}
-                            required
-                            aria-invalid={validName ? "false" : "true"}
-                            aria-describedby="uidnote"
-                            onFocus={() => setUserFocus(true)}
-                            onBlur={() => setUserFocus(false)}
-                        />
-                        <p id="uidnote" className={userFocus && user && !validName ? "instructions" : "offscreen"}>
-                            {/* <FontAwesomeIcon icon={faInfoCircle} /> */}
-                            4 to 24 characters.<br />
-                            Must begin with a letter.<br />
-                            Letters, numbers, underscores, hyphens allowed.
-                        </p>
+                        <div>
+                            <input className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
+                            { ...register("email")} placeholder="fuegos12dejulio@gmail.com"/>
+                            <ErrorMessage errors={errors} name="email"
+                                render={({ message }) =>
+                                    <p className="text-red-400 text-sm pt-1">{message}</p>
+                                }
+                            />
+                        </div>
+                    </div>
+                    {/* CONTRASENÑA */}
+                    <div className="h-[70px]">
+                        <div className="flex items-center justify-between">
+                            <label htmlFor="password" className="block text-sm font-medium leading-6 text-f12-creame">
+                                Contraseña
+                            </label>
+                        </div>
+                        <div>
+                            <input className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
+                                {...register("password")} type="password"/>
+                            <ErrorMessage errors={errors} name="password"
+                                render={({ message }) =>
+                                    <p className="text-red-400 text-sm pt-1">{message}</p>
+                                }
+                            />
+                        </div>
+                    </div>
+                    {/* TELEFONO */}
+                    <div className="h-[70px]">
+                        <div className="flex items-center justify-between">
+                            <label htmlFor="password" className="block text-sm font-medium leading-6 text-f12-creame">
+                                Celular (sin espacios)
+                            </label>
+                        </div>
+                        <div>
 
+                        <div className="relative w-full">
+                            <div className="w-20 absolute top-[6px] left-4 text-gray-500 sm:text-sm sm:leading-6 border-0">+54 9</div>
+                            <input className="rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 w-full py-1.5 pl-16 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
+                    placeholder="1156694242"
+                        {...register("phoneNumber")} type="number" />
+                        </div>
 
-                        <label htmlFor="password">
-                            Password:
-                            {/* <FontAwesomeIcon icon={faCheck} className={validPwd ? "valid" : "hide"} />
-                            <FontAwesomeIcon icon={faTimes} className={validPwd || !pwd ? "hide" : "invalid"} /> */}
-                        </label>
-                        <input
-                            type="password"
-                            id="password"
-                            onChange={(e) => setPwd(e.target.value)}
-                            value={pwd}
-                            required
-                            aria-invalid={validPwd ? "false" : "true"}
-                            aria-describedby="pwdnote"
-                            onFocus={() => setPwdFocus(true)}
-                            onBlur={() => setPwdFocus(false)}
-                        />
-                        <p id="pwdnote" className={pwdFocus && !validPwd ? "instructions" : "offscreen"}>
-                            {/* <FontAwesomeIcon icon={faInfoCircle} /> */}
-                            8 to 24 characters.<br />
-                            Must include uppercase and lowercase letters, a number and a special character.<br />
-                            Allowed special characters: <span aria-label="exclamation mark">!</span> <span aria-label="at symbol">@</span> <span aria-label="hashtag">#</span> <span aria-label="dollar sign">$</span> <span aria-label="percent">%</span>
-                        </p>
+                            <ErrorMessage errors={errors} name="phoneNumber"
+                                render={({ message }) =>
+                                    <p className="text-red-400 text-sm pt-1">{message}</p>
+                                }
+                            />
+                        </div>
+                    </div>
 
-
-                        <label htmlFor="confirm_pwd">
-                            Confirm Password:
-                            {/* <FontAwesomeIcon icon={faCheck} className={validMatch && matchPwd ? "valid" : "hide"} />
-                            <FontAwesomeIcon icon={faTimes} className={validMatch || !matchPwd ? "hide" : "invalid"} /> */}
-                        </label>
-                        <input
-                            type="password"
-                            id="confirm_pwd"
-                            onChange={(e) => setMatchPwd(e.target.value)}
-                            value={matchPwd}
-                            required
-                            aria-invalid={validMatch ? "false" : "true"}
-                            aria-describedby="confirmnote"
-                            onFocus={() => setMatchFocus(true)}
-                            onBlur={() => setMatchFocus(false)}
-                        />
-                        <p id="confirmnote" className={matchFocus && !validMatch ? "instructions" : "offscreen"}>
-                            {/* <FontAwesomeIcon icon={faInfoCircle} /> */}
-                            Must match the first password input field.
-                        </p>
-
-                        <button disabled={!validName || !validPwd || !validMatch ? true : false}>Sign Up</button>
-                    </form>
-                    <p>
-                        Already registered?<br />
-                        <span className="line">
-                            <Link to="/">Sign In</Link>
-                        </span>
-                    </p>
-                </section>
-            )}
-        </>
+                    <button
+                        type="submit"
+                        className="mt-10 flex w-full justify-center rounded-md bg-f12-orange px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-f12-orange-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:f12-blue"
+                    >
+                        Registrarme
+                    </button>
+                </form>
+                <p className="mt-10 text-center text-sm text-f12-creame">
+                    Ya tenes una cuenta?{' '}
+                    <a href="/login" className="font-semibold leading-6 text-f12-blue hover:text-f12-blue-light">
+                        Ir al Login
+                    </a>
+                </p>
+                <CustomToaster/>
+            </div>
+        </div>
     )
 }
 
-export default Register
+export default Login;
