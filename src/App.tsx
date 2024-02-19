@@ -19,7 +19,7 @@ function App() {
   return (
     <Routes>
 
-      <Route element={<Authentificated/>}>
+      <Route element={<Authentificated />}>
         <Route element={<LayoutAuth />}>
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
@@ -28,8 +28,8 @@ function App() {
       </Route>
 
 
-      <Route path="/" element={<Layout />}>
-        <Route element={<RequireAuth allowedRoles={[Role.USER]} />}>
+      <Route element={<RequireAuth allowedRoles={[Role.USER]} />}>
+        <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
         </Route>
         <Route path="unauthorized" element={<Unauthorized />} />
