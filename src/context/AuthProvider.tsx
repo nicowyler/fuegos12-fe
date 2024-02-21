@@ -1,4 +1,4 @@
-import { ApiAuth } from '@/api';
+import { ApiAuth } from '@/api/Auth';
 import { isApiResponse } from '@/api/guards';
 import UseUserStore, { removeUser } from '@/store/user.store';
 import { AuthContextType, UserType } from '@/types';

@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ApiAuth } from "@/api";
+import { ApiAuth } from "@/api/Auth";
 import useAuth from "@/hooks/useAuth";
 import { isApiResponse, isErrorMessage } from "@/api/guards";
 import { AuthType, Response, User, UserType } from '@/types';

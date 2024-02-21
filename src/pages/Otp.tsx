@@ -1,4 +1,4 @@
-import { ApiAuth } from "@/api";
+import { ApiAuth } from "@/api/Auth";
 import CustomToaster from "@/components/CustomToaster";
 import toast from "react-hot-toast";
 import logo from '../assets/logo-fuegos12.svg';

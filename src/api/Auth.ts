@@ -1,0 +1,96 @@
+import axios, { axiosPrivate } from "@/api/axios";
+import { RegisterSchemaType } from "@/pages/Register";
+import { ApiResponse, AuthType, OtpType, Response } from "@/types";
+
+const LOGIN_URL = '/api/auth/login';
+const REGISTER_URL = '/api/auth/register';
+const OTP_URL = '/api/auth/verify';
+const LOGOUT_URL = '/api/auth/logout';
+
+export class ApiAuth {
+
+    static register = async (fields:RegisterSchemaType):Promise<Response<AuthType>> => {
+        let errorMessage:string = "";
+        try{
+            const authApi:ApiResponse<AuthType> = await axios.post(REGISTER_URL,
+                JSON.stringify({ ...fields }),
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: true
+                }
+            );
+            return authApi;
+        } catch (error:any) {
+            if (!error.response) {
+                errorMessage = 'Algo salio mal, vuelve a intentarlo!';
+            } else {
+                errorMessage = error.response?.data.message;
+            }
+            return errorMessage;
+        }
+    }
+
+    static login = async (email:string, password:string):Promise<Response<AuthType>> => {
+        let errorMessage:string = "";
+        try{
+            const authApi:Response<AuthType> = await axios.post(LOGIN_URL,
+                JSON.stringify({ email:email, password:password }),
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: true
+                }
+            );
+            return authApi
+        } catch (error:any) {
+            if (!error.response) {
+                errorMessage = 'Algo salio mal, vuelve a intentarlo!';
+            } else if (error.response?.data.statusCode === 400) {
+                errorMessage = 'El email o la contraseña son incorrectos';
+            } else {
+                errorMessage = error.response?.data.message;
+            }
+            return errorMessage;
+        }
+    }
+
+    static otp = async (email:string, code:string):Promise<Response<OtpType>> => {
+        let errorMessage:string = "";
+        try{
+            const authApi:ApiResponse<OtpType> = await axios.post(OTP_URL,
+                JSON.stringify({email, activationCode:code }),
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: true
+                }
+            );
+            return authApi;
+        } catch (error:any) {
+            if (!error.response) {
+                errorMessage = 'Algo salio mal, vuelve a intentarlo!';
+            } else {
+                errorMessage = error.response?.data.message;
+            }
+            return errorMessage;
+        }
+    }
+
+    static logout = async ():Promise<Response<any>> => {
+        let errorMessage:string = "";
+        try{
+            const authApi:Response<any> = await axiosPrivate.post(LOGOUT_URL,
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: true
+                }
+            );
+            return authApi;
+        } catch (error:any) {
+            if (!error.response) {
+                errorMessage = 'Algo salio mal, vuelve a intentarlo!';
+            } else {
+                errorMessage = error.response?.data.message;
+            }
+            return errorMessage;
+        }
+    }
+}

@@ -3,6 +3,7 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Outlet } from 'react-router-dom'
 import useAuth from '@/hooks/useAuth';
+import MercadoPagoProvider from '@/context/MercadoPagoProvider';
 
 const user = {
   name: 'Tom Cook',
@@ -27,7 +28,7 @@ function classNames(...classes) {
 }
 
 export default function Layout() {
-  const {logOut} = useAuth();
+  const { logOut } = useAuth();
   return (
     <>
       {/*
@@ -210,7 +211,9 @@ export default function Layout() {
         </header>
         <main>
           <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">{
-            <Outlet/>
+            <MercadoPagoProvider>
+              <Outlet />
+            </MercadoPagoProvider>
           }</div>
         </main>
       </div>

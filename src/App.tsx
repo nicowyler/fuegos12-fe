@@ -1,11 +1,11 @@
-import { Routes, Route, redirect } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { Role } from '@/constants';
 import React from 'react';
 import LayoutAuth from '@/pages/LayoutAuth';
 import RequireAuth from '@/pages/RequireAuth';
 import Layout from '@/pages/Layout';
 import Authentificated from '@/pages/Authentificated';
-import * as path from 'path';
+import MpFeedback from '@/pages/MercadoPago/MpFeedback';
 
 const Home = React.lazy(() => import("@/pages/Home"));
 const Login = React.lazy(() => import("@/pages/Login"));
@@ -31,6 +31,11 @@ function App() {
       <Route element={<RequireAuth allowedRoles={[Role.USER]} />}>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
+          <Route path='mercado-pago'>
+            <Route path="success" element={<MpFeedback status="success" />} />
+            <Route path="failure" element={<MpFeedback status='failure' />} />
+            <Route path="pending" element={<MpFeedback status='pending' />} />
+          </Route>
         </Route>
         <Route path="unauthorized" element={<Unauthorized />} />
       </Route>

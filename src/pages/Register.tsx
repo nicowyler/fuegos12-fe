@@ -7,7 +7,7 @@ import { ErrorMessage } from '@hookform/error-message';
 import UseUserStore from "@/store/user.store";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { ApiAuth } from "@/api";
+import { ApiAuth } from "@/api/Auth";
 import { isApiResponse, isErrorMessage } from "@/api/guards";
 import { AuthType, Response } from "@/types";
 import Logo from "@/components/Logo";
