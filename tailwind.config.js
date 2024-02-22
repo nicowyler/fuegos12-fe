@@ -1,4 +1,7 @@
+/* eslint-disable no-undef */
 /** @type {import('tailwindcss').Config} */
+import animations from '@midudev/tailwind-animations'
+
 export default {
   content: [
     "./index.html",
@@ -20,8 +23,9 @@ export default {
     },
   },
   plugins: [
-    // eslint-disable-next-line no-undef
+    animations,
     require('@tailwindcss/forms'),
+    require('@tailwindcss/aspect-ratio'),
   ],
 }
 

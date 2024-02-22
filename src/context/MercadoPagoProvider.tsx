@@ -15,22 +15,15 @@ export const MercadoPagoContext = createContext<TMercadoPagoContextType>({
 const MercadoPagoProvider: FC<{ children: ReactNode }> = ({ children }): ReactElement => {
     const [preferenceId, setPreferenceId] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [orderData, setOrderData] = useState<TOrderData | null>({ id: "1", title: "Bolsa de carbon", quantity: 1, price: 5000, amount: 1, description: "Bolsa de Carbon x 10k" });
+    const [orderData, setOrderData] = useState<TOrderData[] | null>(null);
 
-    const placeOrder = async (params: TOrderData) => {
+    const placeOrder = async (order: TOrderData[]) => {
         setIsLoading(true);
-        const { id, title, quantity, price, amount, description } = params;
 
         try {
-            const response = await ApiMercadoPago.createPreference({
-                id,
-                title,
-                quantity,
-                price,
-                amount,
-                description,
-            });
-
+            if (!orderData) return;
+            const response = await ApiMercadoPago.createPreference(order);
+            console.log(response)
             if (isErrorMessage(response)) {
                 console.log(response);
             } else if (isApiResponse<TPreferenceId>(response)) {

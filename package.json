@@ -15,6 +15,7 @@
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^3.3.4",
     "@mercadopago/sdk-react": "^0.0.17",
+    "@midudev/tailwind-animations": "^0.0.7",
     "@tailwindcss/forms": "^0.5.7",
     "@types/js-cookie": "^3.0.6",
     "axios": "^1.6.7",
@@ -30,6 +31,7 @@
     "zustand": "^4.5.0"
   },
   "devDependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2",
     "@types/node": "^20.11.16",
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",

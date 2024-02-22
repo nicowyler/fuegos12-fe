@@ -5,7 +5,7 @@ const CREATE_PREFERENCE = '/api/mercadopago/create_preference';
 
 export class ApiMercadoPago {
 
-    static createPreference = async (fields: TOrderData): Promise<Response<TPreferenceId>> => {
+    static createPreference = async (fields: TOrderData[]): Promise<Response<TPreferenceId>> => {
         let errorMessage: string = "";
         try {
             const response = await axiosPrivate.post(CREATE_PREFERENCE,

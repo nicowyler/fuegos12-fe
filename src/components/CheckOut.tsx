@@ -1,107 +1,61 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import classnames from 'classnames'
 import { MercadoPagoContext } from "@/context/MercadoPagoProvider";
-
 import { FC, ReactElement } from 'react';
+import { TOrderData } from '../types/mercadoPago.types';;
+import Payment from '@/components/Payment';
+import Loading from "@/components/Loading";
 
-type CheckoutProps = {
-  onClick: () => void,
-  description: string,
-};
-
-const Checkout: FC<CheckoutProps> = ({ onClick, description }: CheckoutProps): ReactElement => {
-  const [isVisible, setIsVisible] = React.useState(true);
-  const { preferenceId, isLoading: disabled, orderData, setOrderData } = useContext(MercadoPagoContext);
-  const shoppingCartClass = classnames('shopping-cart dark', {
-    'shopping-cart--hidden': !isVisible,
+const Checkout: FC = (): ReactElement => {
+  const { isLoading, orderData } = useContext(MercadoPagoContext);
+  const shoppingCartClass = classnames('bg-gray-800 text-white py-4 px-6 fixed bottom-0 right-0 left-0 mx-5 rounded-t-lg bg-opacity-90', {
+    'shopping-cart--hidden': !orderData?.length,
+    'animate-slide-up-fade animate-delay-300 animate-duration-slow': orderData?.length
   });
 
-  useEffect(() => {
-    if (preferenceId) setIsVisible(false);
-  }, [preferenceId]);
-
-  const updatePrice = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.currentTarget.value)
-    const quantity = +event.currentTarget.value;
-    if (orderData) {
-      const amount = orderData.price * quantity;
-      setOrderData({ ...orderData, quantity, amount });
-    }
-  };
+  const renderSpinner = () => isLoading && <Loading />;
 
   return (
     <section className={shoppingCartClass}>
-      <div className="container" id="container">
-        <div className="block-heading">
-          <h2>Shopping Cart</h2>
-          <p>This is an example of Checkout Pro integration of Mercado Pago</p>
-        </div>
-        <div className="content">
-          <div className="row">
-            <div className="col-md-12 col-lg-8">
-              <div className="items">
-                <div className="product">
-                  <div className="info">
-                    <div className="product-details">
-                      <div className="row justify-content-md-center">
-                        <div className="col-md-3">
-                          <img
-                            className="img-fluid mx-auto d-block image"
-                            alt="Image of a product"
-                            src="../img/product.png"
-                          />
-                        </div>
-                        <div className="col-md-4 product-detail">
-                          <h5>Product</h5>
-                          <div className="product-info">
-                            <b>Description: </b>
-                            <span id="product-description">{description}</span>
-                            <br />
-                            <b>Author: </b>Dale Carnegie
-                            <br />
-                            <b>Number of pages: </b>336
-                            <br />
-                            <b>Price:</b> $ <span id="unit-price">10</span>
-                            <br />
-                          </div>
-                        </div>
-                        <div className="col-md-3 product-detail">
-                          <label htmlFor="quantity">
-                            <b>Quantity</b>
-                          </label>
-                          <input
-                            onChange={updatePrice}
-                            type="number"
-                            id="quantity"
-                            value={orderData?.quantity && parseInt(orderData.quantity)}
-                            min="1"
-                            className="form-control"
-                          />
-                        </div>
-                      </div>
-                    </div>
+      <div className="flex flex-col gap-2">
+        <h3>Productos Seleccionados</h3>
+        <span>Subtotal</span>
+        <div className="flex flex-col justify-between">
+
+          {
+            orderData?.length ? orderData.map((item: TOrderData) => {
+              return (
+                <div key={item.id} className="flex justify-between items-baseline">
+                  <div className="flex">
+                    <span>{item.title}</span>
+                    <span className="mx-2">x</span>
+                    <span>{item.quantity} </span>
                   </div>
+                  <span className="h-1 w-full mx-2 border-b-2 border-dashed border-x-slate-400"></span>
+                  <span>${item.unit_price * item.quantity}</span>
                 </div>
-              </div>
-            </div>
-            <div className="col-md-12 col-lg-4">
-              <div className="summary">
-                <h3>Cart</h3>
-                <div className="summary-item">
-                  <span className="text">Subtotal</span>
-                  <span className="price" id="cart-total">${orderData && orderData.amount}</span>
-                </div>
-                <button
-                  className="btn btn-primary btn-lg btn-block"
-                  onClick={onClick}
-                  id="checkout-btn"
-                  disabled={disabled}
-                >
-                  Checkout
-                </button>
-              </div>
-            </div>
+              )
+            }) : null
+          }
+
+          <div className="pt-4 flex justify-between items-baseline">
+            <span>TOTAL</span>
+            <span className="h-1 w-full mx-2 border-b-2 border-dashed border-x-slate-400"></span>
+            <span>${orderData?.length && orderData?.map((item: TOrderData) => item.unit_price * item.quantity).reduce((a, b) => a + b, 0)}</span>
           </div>
+        </div>
+        {/* <button
+          onClick={onClick}
+          disabled={disabled}
+          className="mt-10 flex w-full justify-center rounded-md bg-f12-orange px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-f12-orange-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+          Comprar
+        </button> */}
+        <div className="min-h-28">
+          {isLoading
+            ? <div className="w-full flex justify-center"><Loading /></div>
+            : <Payment />
+          }
         </div>
       </div>
     </section>

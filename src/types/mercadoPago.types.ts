@@ -4,8 +4,7 @@ export type TOrderData = {
     id: string,
     title: string,
     quantity: number,
-    price: number,
-    amount: number
+    unit_price: number,
     description: string
 }
 
@@ -16,7 +15,7 @@ export type TPreferenceId = {
 export interface TMercadoPagoContextType {
     preferenceId: string | null;
     isLoading: boolean;
-    orderData: TOrderData | null;
-    setOrderData: React.Dispatch<React.SetStateAction<TOrderData | null>>;
-    placeOrder: (params: TOrderData) => void;
+    orderData: TOrderData[] | null;
+    setOrderData: React.Dispatch<React.SetStateAction<TOrderData[] | null>>;
+    placeOrder: (order: TOrderData[]) => void;
 }
