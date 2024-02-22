@@ -7,7 +7,7 @@ const Payment = () => {
     const { preferenceId } = useContext(MercadoPagoContext);
     const [isReady, setIsReady] = useState(false);
     const paymentClass = classnames('payment-form dark animate-fade-in animate-delay-800', {
-        'payment-form--hidden': !isReady,
+        'animate-from-fade': !isReady,
     });
 
     const handleOnReady = () => {
