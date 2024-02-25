@@ -1,19 +1,19 @@
 
 import { ApiMercadoPago } from '@/api';
 import { isApiResponse, isErrorMessage } from '@/api/guards';
-import { TPreferenceId, TMercadoPagoContextType, TOrderData } from '@/types';
+import { TPreference, TMercadoPagoContextType, TOrderData } from '@/types';
 import { FC, ReactElement, ReactNode, createContext, useState } from 'react';
 
 export const MercadoPagoContext = createContext<TMercadoPagoContextType>({
     isLoading: false,
     orderData: null,
-    preferenceId: null,
+    preference: null,
     setOrderData: () => { },
     placeOrder: () => { },
 });
 
 const MercadoPagoProvider: FC<{ children: ReactNode }> = ({ children }): ReactElement => {
-    const [preferenceId, setPreferenceId] = useState<string | null>(null);
+    const [preference, setPreference] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [orderData, setOrderData] = useState<TOrderData[] | null>(null);
 
@@ -26,9 +26,10 @@ const MercadoPagoProvider: FC<{ children: ReactNode }> = ({ children }): ReactEl
             console.log(response)
             if (isErrorMessage(response)) {
                 console.log(response);
-            } else if (isApiResponse<TPreferenceId>(response)) {
+            } else if (isApiResponse<TPreference>(response)) {
                 const { data } = response.data;
-                if (data.id) setPreferenceId(data.id);
+                console.log(data)
+                if (data) setPreference(data);
             }
 
         } catch (error) {
@@ -39,7 +40,7 @@ const MercadoPagoProvider: FC<{ children: ReactNode }> = ({ children }): ReactEl
     }
 
     return (
-        <MercadoPagoContext.Provider value={{ isLoading, orderData, setOrderData, preferenceId, placeOrder }}>
+        <MercadoPagoContext.Provider value={{ isLoading, orderData, setOrderData, preference, placeOrder }}>
             {children}
         </MercadoPagoContext.Provider>
     )

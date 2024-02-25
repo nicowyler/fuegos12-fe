@@ -11,6 +11,8 @@ import { ApiAuth } from "@/api/Auth";
 import { isApiResponse, isErrorMessage } from "@/api/guards";
 import { AuthType, Response } from "@/types";
 import Logo from "@/components/Logo";
+import { useState } from "react";
+import PasswordVisible from "@/components/PasswordVisible";
 
 const phoneRegex = new RegExp('^(?=.{10}$)');
 
@@ -28,18 +30,25 @@ const Login = () => {
     const { logIn } = useAuth();
     const userState = UseUserStore();
     const navigate = useNavigate();
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
 
     const { register, handleSubmit, formState: { errors } } = useForm<RegisterSchemaType>({
         resolver: zodResolver(RegisterSchema),
     })
 
+
+    const togglePasswordVisibility = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setIsPasswordVisible(!isPasswordVisible);
+    }
     const onSubmit = async (fields: RegisterSchemaType) => {
         fields.phoneNumber = `+549${fields.phoneNumber}`;
-        const response:Response<AuthType> = await ApiAuth.register(fields);
+        const response: Response<AuthType> = await ApiAuth.register(fields);
 
         userState.saveUser({
             email: fields.email,
+            password: fields.password,
             fullName: {
                 firstName: fields.firstName,
                 lastName: fields.lastName
@@ -58,12 +67,12 @@ const Login = () => {
 
     return (
         <div className="flex min-h-full flex-1 flex-col justify-start pt-[5 %] lg:pt-0 lg:justify-center px-6 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-            <Logo/>
-            <h2 className="text-center text-3xl font-title font-bold tracking-widest uppercase text-f12-creame">
-                Ingresa a tu cuenta
-            </h2>
-        </div>
+            <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+                <Logo />
+                <h2 className="text-center text-3xl font-title font-bold tracking-widest uppercase text-f12-creame">
+                    Ingresa a tu cuenta
+                </h2>
+            </div>
             <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <div className="flex flex-row gap-4 h-[70px]">
@@ -74,7 +83,7 @@ const Login = () => {
                             </label>
                             <div>
                                 <input className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
-                                { ...register("firstName")} placeholder="Juan Carlos"/>
+                                    {...register("firstName")} placeholder="Juan Carlos" />
                                 <ErrorMessage errors={errors} name="firstName"
                                     render={({ message }) =>
                                         <p className="text-red-400 text-sm pt-1">{message}</p>
@@ -89,7 +98,7 @@ const Login = () => {
                             </label>
                             <div>
                                 <input className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
-                                { ...register("lastName")} placeholder="Madero"/>
+                                    {...register("lastName")} placeholder="Madero" />
                                 <ErrorMessage errors={errors} name="lastName"
                                     render={({ message }) =>
                                         <p className="text-red-400 text-sm pt-1">{message}</p>
@@ -105,7 +114,7 @@ const Login = () => {
                         </label>
                         <div>
                             <input className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
-                            { ...register("email")} placeholder="fuegos12dejulio@gmail.com"/>
+                                {...register("email")} placeholder="fuegos12dejulio@gmail.com" />
                             <ErrorMessage errors={errors} name="email"
                                 render={({ message }) =>
                                     <p className="text-red-400 text-sm pt-1">{message}</p>
@@ -120,9 +129,13 @@ const Login = () => {
                                 Contraseña
                             </label>
                         </div>
-                        <div>
-                            <input className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
-                                {...register("password")} type="password"/>
+                        <div className="relative">
+                            <input
+                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
+                                {...register("password")}
+                                type={isPasswordVisible ? "text" : "password"}
+                            />
+                            <PasswordVisible isPasswordVisible={isPasswordVisible} togglePasswordVisibility={togglePasswordVisibility} />
                             <ErrorMessage errors={errors} name="password"
                                 render={({ message }) =>
                                     <p className="text-red-400 text-sm pt-1">{message}</p>
@@ -139,12 +152,12 @@ const Login = () => {
                         </div>
                         <div>
 
-                        <div className="relative w-full">
-                            <div className="w-20 absolute top-[6px] left-4 text-gray-500 sm:text-sm sm:leading-6 border-0">+54 9</div>
-                            <input className="rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 w-full py-1.5 pl-16 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
-                    placeholder="1156694242"
-                        {...register("phoneNumber")} type="number" />
-                        </div>
+                            <div className="relative w-full">
+                                <div className="w-20 absolute top-[6px] left-4 text-gray-500 sm:text-sm sm:leading-6 border-0">+54 9</div>
+                                <input className="rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 w-full py-1.5 pl-16 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
+                                    placeholder="1156694242"
+                                    {...register("phoneNumber")} type="number" />
+                            </div>
 
                             <ErrorMessage errors={errors} name="phoneNumber"
                                 render={({ message }) =>
@@ -167,7 +180,7 @@ const Login = () => {
                         Ir al Login
                     </a>
                 </p>
-                <CustomToaster/>
+                <CustomToaster />
             </div>
         </div>
     )

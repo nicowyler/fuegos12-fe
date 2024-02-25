@@ -8,12 +8,10 @@ export type TOrderData = {
     description: string
 }
 
-export type TPreferenceId = {
-    id: string
-}
+export type TPreference = string;
 
 export interface TMercadoPagoContextType {
-    preferenceId: string | null;
+    preference: string | null;
     isLoading: boolean;
     orderData: TOrderData[] | null;
     setOrderData: React.Dispatch<React.SetStateAction<TOrderData[] | null>>;

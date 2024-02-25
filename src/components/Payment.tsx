@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import classnames from 'classnames'
 import { Wallet } from "@mercadopago/sdk-react";
 import { MercadoPagoContext } from '../context/MercadoPagoProvider';
@@ -6,9 +6,13 @@ import { MercadoPagoContext } from '../context/MercadoPagoProvider';
 const Payment = () => {
     const { preferenceId } = useContext(MercadoPagoContext);
     const [isReady, setIsReady] = useState(false);
-    const paymentClass = classnames('payment-form dark animate-fade-in animate-delay-800', {
-        'animate-from-fade': !isReady,
-    });
+    const paymentClass = classnames('payment-form dark');
+
+    const customization = {
+        visual: {
+            hideValueProp: true
+        }
+    };
 
     const handleOnReady = () => {
         setIsReady(true);
@@ -18,10 +22,14 @@ const Payment = () => {
         if (!preferenceId) return null;
 
         return (
-            <Wallet
-                initialization={{ preferenceId, redirectMode: 'modal' }}
-                onReady={handleOnReady}
-            />
+            <div className={classnames("opacity-0", { "opacity-100": isReady })}>
+                <Wallet
+                    initialization={{ preferenceId, redirectMode: 'modal' }}
+                    customization={customization}
+                    locale='es-AR'
+                    onReady={handleOnReady}
+                />
+            </div>
         )
     }
 

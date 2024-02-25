@@ -7,11 +7,17 @@ export interface OtpType {
     code: string,
 }
 
+type TUserName = {
+    firstName: string,
+    lastName: string
+}
+
 export type UserType = {
-    id: string,
-    name: string,
+    id?: string,
     email: string,
-    roles: string[],
+    password: string,
+    fullName: TUserName
+    phone: string
 }
 
 export type UserList = Omit<UserType, 'roles' | 'name'>;
@@ -19,14 +25,14 @@ export type UserList = Omit<UserType, 'roles' | 'name'>;
 export type Token = string;
 
 export type TokensType = {
-    access_token:string,
-    refresh_token:string,
+    access_token: string,
+    refresh_token: string,
     expiresIn: Date,
 }
 
 export interface AuthContextType {
     auth: UserType | null
     setAuth: React.Dispatch<React.SetStateAction<UserType | null>>;
-    logIn: (data:UserType) => void;
+    logIn: (data: UserType) => void;
     logOut: () => void;
 }

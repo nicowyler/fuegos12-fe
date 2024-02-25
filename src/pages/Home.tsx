@@ -33,13 +33,11 @@ const productsList: TProduct[] = [
 
 const Home = () => {
     const { saveProductsList, updateProduct, removeProduct, products } = UseProductsStore();
-    const { isLoading, placeOrder, setOrderData, orderData } = useContext(MercadoPagoContext);
+    const { placeOrder, setOrderData, orderData } = useContext(MercadoPagoContext);
 
     useEffect(() => {
         saveProductsList(productsList);
     }, [])
-
-    const renderSpinner = () => isLoading && <Loading />;
 
     const productRemove = (id: string) => {
         removeProduct(id)

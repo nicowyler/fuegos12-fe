@@ -193,7 +193,7 @@ export default function Layout() {
           )}
         </Disclosure>
 
-        <section className="mx-auto h-[calc(100vh-64px)] flex flex-col justify-between">
+        <section className="mx-auto h-[calc(100vh-64px)] flex flex-col justify-between overflow-auto">
           <MercadoPagoProvider>
             <Outlet />
           </MercadoPagoProvider>
