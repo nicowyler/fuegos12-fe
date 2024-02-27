@@ -1,12 +1,12 @@
 {
-  "name": "vite-react-typescript-starter",
+  "name": "fuegos_12_de_julio",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
-    "start": "vite build",
+    "start": "npx http-server ./dist",
     "lint": "eslint . --ext .ts,.tsx",
     "preview": "vite preview"
   },
