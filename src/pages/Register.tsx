@@ -53,14 +53,15 @@ const Login = () => {
                 firstName: fields.firstName,
                 lastName: fields.lastName
             },
-            phone: fields.phoneNumber
+            phone: fields.phoneNumber,
+            roles: ['USER']
         })
 
         if (isErrorMessage(response)) {
             toast.error(response);
         } else if (isApiResponse<AuthType>(response)) {
             const { data } = response.data;
-            logIn(data);
+            logIn(data.user);
             navigate('/otp');
         }
     }

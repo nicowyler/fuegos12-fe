@@ -16,8 +16,9 @@ export type UserType = {
     id?: string,
     email: string,
     password: string,
-    fullName: TUserName
-    phone: string
+    fullName: TUserName,
+    phone: string,
+    roles: string[]
 }
 
 export type UserList = Omit<UserType, 'roles' | 'name'>;
