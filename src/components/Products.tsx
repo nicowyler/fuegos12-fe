@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import { TProduct } from '@/types/products.types';
 import { formatToArs } from '@/utils';
 import classNames from 'classnames';
 import { FC, ReactElement, useState } from 'react';

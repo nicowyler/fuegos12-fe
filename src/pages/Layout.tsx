@@ -155,7 +155,7 @@ export default function Layout() {
                       <img className="h-10 w-10 rounded-full" src={userIcon} alt="" />
                     </div>
                     <div className="ml-3">
-                      <div className="text-base font-medium leading-none text-white">{user?.name}</div>
+                      <div className="text-base font-medium leading-none text-white">{user?.fullName.firstName}</div>
                       <div className="text-sm font-medium leading-none text-gray-400">{user?.email}</div>
                     </div>
                     <button

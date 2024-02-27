@@ -1,4 +1,4 @@
-import React, { useContext, FC, ReactElement } from "react";
+import { useContext, FC, ReactElement } from "react";
 import classnames from 'classnames'
 import { MercadoPagoContext } from "@/context/MercadoPagoProvider";
 import { TOrderData } from '../types/mercadoPago.types';;

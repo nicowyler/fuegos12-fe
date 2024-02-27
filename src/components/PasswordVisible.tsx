@@ -1,8 +1,9 @@
+/* eslint-disable no-unused-vars */
 import { FC, ReactElement } from 'react';
 
 type PasswordVisibleProps = {
     isPasswordVisible: boolean,
-    togglePasswordVisibility: () => void;
+    togglePasswordVisibility: (e: React.MouseEvent) => void;
 };
 
 const PasswordVisible: FC<PasswordVisibleProps> = ({ isPasswordVisible, togglePasswordVisibility }: PasswordVisibleProps): ReactElement => {
