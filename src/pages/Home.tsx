@@ -6,6 +6,7 @@ import Products from "@/components/Products";
 import carbonImg from '../assets/bolsa-carbon.png'
 import leniaImg from '../assets/lenia.png'
 import UseProductsStore from "@/store/products.store";
+import { TProduct } from "@/types/products.types";
 
 initMercadoPago("TEST-867aa7f0-0743-4ebc-a445-d710b2d16648", {
     locale: "es-AR",
