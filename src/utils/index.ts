@@ -8,7 +8,7 @@ export const formatPhone = (phone: string | undefined) => {
     return fullNumber;
 }
 export const formatToArs = (price: number) => {
-    let ArPesos = new Intl.NumberFormat('es-AR', {
+    const ArPesos = new Intl.NumberFormat('es-AR', {
         style: 'currency',
         currency: 'ARS',
     });

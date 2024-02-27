@@ -1,7 +1,6 @@
-import React, { useContext } from "react";
+import React, { useContext, FC, ReactElement } from "react";
 import classnames from 'classnames'
 import { MercadoPagoContext } from "@/context/MercadoPagoProvider";
-import { FC, ReactElement } from 'react';
 import { TOrderData } from '../types/mercadoPago.types';;
 import { formatToArs } from '../utils/index';
 import PayButton from "@/components/PayButton";

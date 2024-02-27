@@ -9,10 +9,10 @@ const LOGOUT_URL = '/api/auth/logout';
 
 export class ApiAuth {
 
-    static register = async (fields:RegisterSchemaType):Promise<Response<AuthType>> => {
-        let errorMessage:string = "";
-        try{
-            const authApi:ApiResponse<AuthType> = await axios.post(REGISTER_URL,
+    static register = async (fields: RegisterSchemaType): Promise<Response<AuthType>> => {
+        let errorMessage: string = "";
+        try {
+            const authApi: ApiResponse<AuthType> = await axios.post(REGISTER_URL,
                 JSON.stringify({ ...fields }),
                 {
                     headers: { 'Content-Type': 'application/json' },
@@ -20,7 +20,8 @@ export class ApiAuth {
                 }
             );
             return authApi;
-        } catch (error:any) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
             if (!error.response) {
                 errorMessage = 'Algo salio mal, vuelve a intentarlo!';
             } else {
@@ -30,18 +31,19 @@ export class ApiAuth {
         }
     }
 
-    static login = async (email:string, password:string):Promise<Response<AuthType>> => {
-        let errorMessage:string = "";
-        try{
-            const authApi:Response<AuthType> = await axios.post(LOGIN_URL,
-                JSON.stringify({ email:email, password:password }),
+    static login = async (email: string, password: string): Promise<Response<AuthType>> => {
+        let errorMessage: string = "";
+        try {
+            const authApi: Response<AuthType> = await axios.post(LOGIN_URL,
+                JSON.stringify({ email: email, password: password }),
                 {
                     headers: { 'Content-Type': 'application/json' },
                     withCredentials: true
                 }
             );
             return authApi
-        } catch (error:any) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
             if (!error.response) {
                 errorMessage = 'Algo salio mal, vuelve a intentarlo!';
             } else if (error.response?.data.statusCode === 400) {
@@ -53,18 +55,19 @@ export class ApiAuth {
         }
     }
 
-    static otp = async (email:string, code:string):Promise<Response<OtpType>> => {
-        let errorMessage:string = "";
-        try{
-            const authApi:ApiResponse<OtpType> = await axios.post(OTP_URL,
-                JSON.stringify({email, activationCode:code }),
+    static otp = async (email: string, code: string): Promise<Response<OtpType>> => {
+        let errorMessage: string = "";
+        try {
+            const authApi: ApiResponse<OtpType> = await axios.post(OTP_URL,
+                JSON.stringify({ email, activationCode: code }),
                 {
                     headers: { 'Content-Type': 'application/json' },
                     withCredentials: true
                 }
             );
             return authApi;
-        } catch (error:any) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
             if (!error.response) {
                 errorMessage = 'Algo salio mal, vuelve a intentarlo!';
             } else {
@@ -74,17 +77,18 @@ export class ApiAuth {
         }
     }
 
-    static logout = async ():Promise<Response<any>> => {
-        let errorMessage:string = "";
-        try{
-            const authApi:Response<any> = await axiosPrivate.post(LOGOUT_URL,
+    static logout = async (): Promise<Response<null>> => {
+        let errorMessage: string = "";
+        try {
+            const authApi: Response<null> = await axiosPrivate.post(LOGOUT_URL,
                 {
                     headers: { 'Content-Type': 'application/json' },
                     withCredentials: true
                 }
             );
             return authApi;
-        } catch (error:any) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
             if (!error.response) {
                 errorMessage = 'Algo salio mal, vuelve a intentarlo!';
             } else {

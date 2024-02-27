@@ -1,5 +1,5 @@
 
-type TProduct = {
+export type TProduct = {
     title: string;
     description: string;
     unit_price: number;

@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { ApiAuth } from "@/api/Auth";
 import useAuth from "@/hooks/useAuth";
 import { isApiResponse, isErrorMessage } from "@/api/guards";
-import { AuthType, Response, User, UserType } from '@/types';
+import { UserType } from '@/types';
 import CustomToaster from "@/components/CustomToaster";
 import toast from "react-hot-toast";
 import { ErrorMessage } from '@hookform/error-message';

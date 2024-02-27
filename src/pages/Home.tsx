@@ -1,5 +1,4 @@
 import Checkout from "@/components/CheckOut";
-import Loading from "@/components/Loading";
 import { MercadoPagoContext } from "@/context/MercadoPagoProvider";
 import { useContext, useEffect } from "react"
 import { initMercadoPago } from "@mercadopago/sdk-react";
@@ -37,15 +36,18 @@ const Home = () => {
 
     useEffect(() => {
         saveProductsList(productsList);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const productRemove = (id: string) => {
         removeProduct(id)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const order = products.filter(product => product.quantity > 0).map(({ image, ...rest }) => rest);
         setOrderData(order);
     }
     const productSelected = (id: string) => {
         updateProduct(id);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const order = products.filter(product => product.quantity > 0).map(({ image, ...rest }) => rest);
         setOrderData(order);
     };
@@ -55,6 +57,7 @@ const Home = () => {
         if (orderData?.length) {
             placeOrder(orderData);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [orderData])
 
     return (

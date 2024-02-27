@@ -1,5 +1,4 @@
 import Loading from '@/components/Loading';
-import classNames from 'classnames';
 import { FC, ReactElement, useState } from 'react';
 
 type PayButtonProps = {

@@ -1,3 +1,5 @@
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ApiResponse, ErrorMessage } from "@/types";
 
 export function isApiResponse<T>(response: any): response is ApiResponse<T> {

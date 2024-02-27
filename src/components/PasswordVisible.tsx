@@ -2,7 +2,7 @@ import { FC, ReactElement } from 'react';
 
 type PasswordVisibleProps = {
     isPasswordVisible: boolean,
-    togglePasswordVisibility: (e: React.MouseEvent) => void;
+    togglePasswordVisibility: () => void;
 };
 
 const PasswordVisible: FC<PasswordVisibleProps> = ({ isPasswordVisible, togglePasswordVisibility }: PasswordVisibleProps): ReactElement => {
