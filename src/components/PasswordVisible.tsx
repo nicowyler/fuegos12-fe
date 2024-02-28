@@ -9,7 +9,7 @@ type PasswordVisibleProps = {
 const PasswordVisible: FC<PasswordVisibleProps> = ({ isPasswordVisible, togglePasswordVisibility }: PasswordVisibleProps): ReactElement => {
     return (
         <button
-            className="absolute inset-y-0 right-0 flex items-center px-4 text-gray-600"
+            className="absolute h-9 inset-y-0 right-0 flex items-center px-4 text-gray-600"
             onClick={togglePasswordVisibility}
         >
             {isPasswordVisible ? (

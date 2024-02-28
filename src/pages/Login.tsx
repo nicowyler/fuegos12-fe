@@ -11,6 +11,7 @@ import { ErrorMessage } from '@hookform/error-message';
 import Logo from "@/components/Logo";
 import PasswordVisible from '../components/PasswordVisible';
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const LoginSchema = z.object({
     email: z.string().min(1, { message: "Tienes que completar este campo!" }).email("Ingresa un email valido!"),
@@ -54,7 +55,7 @@ const Login = () => {
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-sm">
                 <form onSubmit={handleSubmit((data) => onSubmit(data))} className="space-y-6">
                     {/* EMAIL */}
-                    <div className="h-[70px]">
+                    <div className="h-[60px]">
                         <label htmlFor="email" className="block text-sm font-medium leading-6 text-f12-creame">
                             Email
                         </label>
@@ -98,17 +99,17 @@ const Login = () => {
                     <div>
                         <button
                             type="submit"
-                            className="mt-10 flex w-full justify-center rounded-md bg-f12-orange px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-f12-orange-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                            className="mt-8 flex w-full justify-center rounded-md bg-f12-orange px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-f12-orange-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
                             Entrar
                         </button>
                     </div>
                 </form>
-                <p className="mt-10 text-center text-sm text-f12-creame">
+                <p className="mt-5 text-center text-sm text-f12-creame">
                     No tenes una cuenta?{' '}
-                    <a href="/register" className="font-semibold leading-6 text-f12-blue hover:text-f12-blue-light">
+                    <Link to="/register" className="font-semibold leading-6 text-f12-blue hover:text-f12-blue-light">
                         Registrate
-                    </a>
+                    </Link>
                 </p>
                 <CustomToaster />
             </div>

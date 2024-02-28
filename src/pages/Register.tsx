@@ -5,7 +5,7 @@ import useAuth from "@/hooks/useAuth";
 import CustomToaster from "@/components/CustomToaster";
 import { ErrorMessage } from '@hookform/error-message';
 import UseUserStore from "@/store/user.store";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { ApiAuth } from "@/api/Auth";
 import { isApiResponse, isErrorMessage } from "@/api/guards";
@@ -76,7 +76,7 @@ const Login = () => {
             </div>
             <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                    <div className="flex flex-row gap-4 h-[70px]">
+                    <div className="flex flex-row gap-4 h-[60px]">
                         {/* Nombre */}
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium leading-6 text-f12-creame">
@@ -170,16 +170,16 @@ const Login = () => {
 
                     <button
                         type="submit"
-                        className="mt-10 flex w-full justify-center rounded-md bg-f12-orange px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-f12-orange-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:f12-blue"
+                        className="mt-8 flex w-full justify-center rounded-md bg-f12-orange px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-f12-orange-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:f12-blue"
                     >
                         Registrarme
                     </button>
                 </form>
-                <p className="mt-10 text-center text-sm text-f12-creame">
+                <p className="my-5 text-center text-sm text-f12-creame">
                     Ya tenes una cuenta?{' '}
-                    <a href="/login" className="font-semibold leading-6 text-f12-blue hover:text-f12-blue-light">
+                    <Link to="/login" className="font-semibold leading-6 text-f12-blue hover:text-f12-blue-light">
                         Ir al Login
-                    </a>
+                    </Link>
                 </p>
                 <CustomToaster />
             </div>

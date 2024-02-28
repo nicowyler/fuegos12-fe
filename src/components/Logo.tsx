@@ -3,8 +3,7 @@ import logo from '../assets/logo-fuegos12.svg';
 
 const Logo: FC = (): ReactElement => {
     return (
-        <img
-            className="mx-auto w-52 h-auto my-2"
+        <img style={{ aspectRatio: '1/1', width: '100%', maxHeight: '16rem' }}
             src={logo}
             alt="Your Company"
         />
