@@ -1,10 +1,10 @@
-/* eslint-disable no-unused-vars */
 import { UserType } from '@/types'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 type UserState = {
   user: UserType | null,
+  // eslint-disable-next-line no-unused-vars
   saveUser: (user: UserType) => void
 }
 

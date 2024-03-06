@@ -6,6 +6,7 @@ import RequireAuth from '@/pages/RequireAuth';
 import Layout from '@/pages/Layout';
 import Authentificated from '@/pages/Authentificated';
 import MpFeedback from '@/pages/MercadoPago/MpFeedback';
+import PasswordRecover from '@/pages/PasswordRecover';
 
 const Home = React.lazy(() => import("@/pages/Home"));
 const Login = React.lazy(() => import("@/pages/Login"));
@@ -22,6 +23,7 @@ function App() {
       <Route element={<Authentificated />}>
         <Route element={<LayoutAuth />}>
           <Route path="login" element={<Login />} />
+          <Route path="forgot-password" element={<PasswordRecover />} />
           <Route path="register" element={<Register />} />
           <Route path="otp" element={<Otp />} />
         </Route>

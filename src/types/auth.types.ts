@@ -22,6 +22,9 @@ export type UserType = {
     roles: string[]
 }
 
+
+export type EmailRecoverType = string;
+
 export type UserList = Omit<UserType, 'roles' | 'name'>;
 
 export type Token = string;

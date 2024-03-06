@@ -4,7 +4,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { ApiAuth } from "@/api/Auth";
 import useAuth from "@/hooks/useAuth";
 import { isApiResponse, isErrorMessage } from "@/api/guards";
-import { UserType } from '@/types';
 import CustomToaster from "@/components/CustomToaster";
 import toast from "react-hot-toast";
 import { ErrorMessage } from '@hookform/error-message';
@@ -12,6 +11,9 @@ import Logo from "@/components/Logo";
 import PasswordVisible from '../components/PasswordVisible';
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useApiMiddleware } from "@/hooks/useApiMiddleware";
+import { AuthType } from '../types/auth.types';
+import SubmitButton from "@/components/SubmitButton";
 
 const LoginSchema = z.object({
     email: z.string().min(1, { message: "Tienes que completar este campo!" }).email("Ingresa un email valido!"),
@@ -21,6 +23,7 @@ const LoginSchema = z.object({
 type Schema = z.infer<typeof LoginSchema>
 
 const Login = () => {
+    const { isLoading, apiCall } = useApiMiddleware();
     const { logIn } = useAuth();
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const { register, handleSubmit, formState: { errors } } = useForm<Schema>({
@@ -33,12 +36,12 @@ const Login = () => {
     }
 
     const onSubmit = async (fields: Schema) => {
-        console.log(fields)
-        const response = await ApiAuth.login(fields.email, fields.password);
+
+        const response = await apiCall<AuthType>(() => ApiAuth.login(fields.email, fields.password))
 
         if (isErrorMessage(response)) {
             toast.error(response);
-        } else if (isApiResponse<UserType>(response)) {
+        } else if (isApiResponse<AuthType>(response)) {
             const { data } = response.data;
             logIn(data.user);
         }
@@ -60,7 +63,8 @@ const Login = () => {
                             Email
                         </label>
                         <div>
-                            <input className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
+                            <input disabled={isLoading}
+                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
                                 {...register("email")} />
                             <ErrorMessage errors={errors} name="email"
                                 render={({ message }) =>
@@ -83,6 +87,7 @@ const Login = () => {
                         </div>
                         <div className="relative">
                             <input
+                                disabled={isLoading}
                                 className="block w-full rounde  d-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
                                 {...register("password")}
                                 type={isPasswordVisible ? "text" : "password"}
@@ -97,12 +102,7 @@ const Login = () => {
                     </div>
 
                     <div>
-                        <button
-                            type="submit"
-                            className="mt-8 flex w-full justify-center rounded-md bg-f12-orange px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-f12-orange-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                        >
-                            Entrar
-                        </button>
+                        <SubmitButton isLoading={isLoading} label="Ingresar" />
                     </div>
                 </form>
                 <p className="mt-5 text-center text-sm text-f12-creame">

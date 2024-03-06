@@ -1,5 +1,6 @@
 import axios from 'axios';
-const BASE_URL = `https://${import.meta.env.VITE_API_URL}`;
+const secure = import.meta.env.PROD ? 'https://' : 'http://';
+const BASE_URL = `${secure}${import.meta.env.VITE_API_URL}`;
 
 export default axios.create({
     baseURL: BASE_URL

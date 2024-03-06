@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form"
 import * as z from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
-import useAuth from "@/hooks/useAuth";
 import CustomToaster from "@/components/CustomToaster";
 import { ErrorMessage } from '@hookform/error-message';
 import UseUserStore from "@/store/user.store";
@@ -9,10 +8,12 @@ import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { ApiAuth } from "@/api/Auth";
 import { isApiResponse, isErrorMessage } from "@/api/guards";
-import { AuthType, Response } from "@/types";
+import { AuthType } from "@/types";
 import Logo from "@/components/Logo";
 import { useState } from "react";
 import PasswordVisible from "@/components/PasswordVisible";
+import SubmitButton from "@/components/SubmitButton";
+import { useApiMiddleware } from "@/hooks/useApiMiddleware";
 
 const phoneRegex = new RegExp('^(?=.{10}$)');
 
@@ -27,7 +28,7 @@ const RegisterSchema = z.object({
 export type RegisterSchemaType = z.infer<typeof RegisterSchema>
 
 const Login = () => {
-    const { logIn } = useAuth();
+    const { isLoading, apiCall } = useApiMiddleware();
     const userState = UseUserStore();
     const navigate = useNavigate();
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -44,7 +45,8 @@ const Login = () => {
     }
     const onSubmit = async (fields: RegisterSchemaType) => {
         fields.phoneNumber = `+549${fields.phoneNumber}`;
-        const response: Response<AuthType> = await ApiAuth.register(fields);
+
+        const response = await apiCall<AuthType>(() => ApiAuth.register(fields))
 
         userState.saveUser({
             email: fields.email,
@@ -60,8 +62,6 @@ const Login = () => {
         if (isErrorMessage(response)) {
             toast.error(response);
         } else if (isApiResponse<AuthType>(response)) {
-            const { data } = response.data;
-            logIn(data.user);
             navigate('/otp');
         }
     }
@@ -83,7 +83,9 @@ const Login = () => {
                                 Nombre
                             </label>
                             <div>
-                                <input className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
+                                <input
+                                    disabled={isLoading}
+                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
                                     {...register("firstName")} placeholder="Juan Carlos" />
                                 <ErrorMessage errors={errors} name="firstName"
                                     render={({ message }) =>
@@ -98,7 +100,9 @@ const Login = () => {
                                 Apellido
                             </label>
                             <div>
-                                <input className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
+                                <input
+                                    disabled={isLoading}
+                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
                                     {...register("lastName")} placeholder="Madero" />
                                 <ErrorMessage errors={errors} name="lastName"
                                     render={({ message }) =>
@@ -114,7 +118,9 @@ const Login = () => {
                             Email
                         </label>
                         <div>
-                            <input className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
+                            <input
+                                disabled={isLoading}
+                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
                                 {...register("email")} placeholder="fuegos12dejulio@gmail.com" />
                             <ErrorMessage errors={errors} name="email"
                                 render={({ message }) =>
@@ -132,6 +138,7 @@ const Login = () => {
                         </div>
                         <div className="relative">
                             <input
+                                disabled={isLoading}
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
                                 {...register("password")}
                                 type={isPasswordVisible ? "text" : "password"}
@@ -155,7 +162,9 @@ const Login = () => {
 
                             <div className="relative w-full">
                                 <div className="w-20 absolute top-[6px] left-4 text-gray-500 sm:text-sm sm:leading-6 border-0">+54 9</div>
-                                <input className="rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 w-full py-1.5 pl-16 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
+                                <input
+                                    disabled={isLoading}
+                                    className="rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 w-full py-1.5 pl-16 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
                                     placeholder="1156694242"
                                     {...register("phoneNumber")} type="number" />
                             </div>
@@ -168,12 +177,9 @@ const Login = () => {
                         </div>
                     </div>
 
-                    <button
-                        type="submit"
-                        className="mt-8 flex w-full justify-center rounded-md bg-f12-orange px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-f12-orange-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:f12-blue"
-                    >
-                        Registrarme
-                    </button>
+
+                    <SubmitButton label="Registrarme" isLoading={isLoading} />
+
                 </form>
                 <p className="my-5 text-center text-sm text-f12-creame">
                     Ya tenes una cuenta?{' '}

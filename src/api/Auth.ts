@@ -1,8 +1,9 @@
 import axios, { axiosPrivate } from "@/api/axios";
 import { RegisterSchemaType } from "@/pages/Register";
-import { ApiResponse, AuthType, OtpType, Response } from "@/types";
+import { ApiResponse, AuthType, EmailRecoverType, OtpType, Response } from "@/types";
 
 const LOGIN_URL = '/api/auth/login';
+const PASSWORD_RECOVER = '/api/auth/password-recover';
 const REGISTER_URL = '/api/auth/register';
 const OTP_URL = '/api/auth/verify';
 const LOGOUT_URL = '/api/auth/logout';
@@ -55,11 +56,35 @@ export class ApiAuth {
         }
     }
 
-    static otp = async (email: string, code: string): Promise<Response<OtpType>> => {
+    static passwordRecover = async (email: string): Promise<Response<EmailRecoverType>> => {
+        let errorMessage: string = "";
+        try {
+            const authApi: Response<EmailRecoverType> = await axios.post(PASSWORD_RECOVER,
+                JSON.stringify({ email }),
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: true
+                }
+            );
+            return authApi
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            if (!error.response) {
+                errorMessage = 'Algo salio mal, vuelve a intentarlo!';
+            } else if (error.response?.data.statusCode === 400) {
+                errorMessage = 'El email o la contraseña son incorrectos';
+            } else {
+                errorMessage = error.response?.data.message;
+            }
+            return errorMessage;
+        }
+    }
+
+    static otp = async (phone: string, code: string): Promise<Response<OtpType>> => {
         let errorMessage: string = "";
         try {
             const authApi: ApiResponse<OtpType> = await axios.post(OTP_URL,
-                JSON.stringify({ email, activationCode: code }),
+                JSON.stringify({ phone, activationCode: code }),
                 {
                     headers: { 'Content-Type': 'application/json' },
                     withCredentials: true
