@@ -178,7 +178,7 @@ const Login = () => {
                     </div>
 
 
-                    <SubmitButton label="Registrarme" isLoading={isLoading} />
+                    <SubmitButton disabled={isLoading} label="Registrarme" isLoading={isLoading} />
 
                 </form>
                 <p className="my-5 text-center text-sm text-f12-creame">

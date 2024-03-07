@@ -68,7 +68,7 @@ const Products: FC<ProductsProps> = ({ productsList, onProductSelected, onProduc
                         </div>
                     ))}
 
-                    <div className={classNames("text-balance text-gray-400 rounded-lg border-gray-200 border-solid border-2 p-10 flex flex-col justify-center items-center transition-all duration-500 mt-0", {
+                    <div className={classNames("text-balance text-gray-400 rounded-lg border-gray-200 border-solid border-2 p-10 flex flex-col justify-center items-center sm:items-start transition-all duration-500 mt-0 sm:col-span-2", {
                         'mt-16 opacity-0': productClicked
                     })}>
                         <div className='text-f12-orange w-full flex pb-3'>

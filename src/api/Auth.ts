@@ -2,11 +2,13 @@ import axios, { axiosPrivate } from "@/api/axios";
 import { RegisterSchemaType } from "@/pages/Register";
 import { ApiResponse, AuthType, EmailRecoverType, OtpType, Response } from "@/types";
 
-const LOGIN_URL = '/api/auth/login';
-const PASSWORD_RECOVER = '/api/auth/password-recover';
-const REGISTER_URL = '/api/auth/register';
-const OTP_URL = '/api/auth/verify';
-const LOGOUT_URL = '/api/auth/logout';
+const API_BASE = '/api/auth';
+const LOGIN_URL = `${API_BASE}/login`;
+const PASSWORD_RESET = `${API_BASE}/new-password`;
+const PASSWORD_RECOVER = `${API_BASE}/password-recover`;
+const REGISTER_URL = `${API_BASE}/register`;
+const OTP_URL = `${API_BASE}/verify`;
+const LOGOUT_URL = `${API_BASE}/logout`;
 
 export class ApiAuth {
 
@@ -64,6 +66,31 @@ export class ApiAuth {
                 {
                     headers: { 'Content-Type': 'application/json' },
                     withCredentials: true
+                }
+            );
+            return authApi
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            if (!error.response) {
+                errorMessage = 'Algo salio mal, vuelve a intentarlo!';
+            } else if (error.response?.data.statusCode === 400) {
+                errorMessage = 'El email o la contraseña son incorrectos';
+            } else {
+                errorMessage = error.response?.data.message;
+            }
+            return errorMessage;
+        }
+    }
+
+    static passwordReset = async (password: string, oldPassword: string | null, email: string | null): Promise<Response<EmailRecoverType>> => {
+        let errorMessage: string = "";
+        try {
+            const authApi: Response<EmailRecoverType> = await axios.post(PASSWORD_RESET,
+                JSON.stringify({ password, oldPassword, email }),
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
                 }
             );
             return authApi

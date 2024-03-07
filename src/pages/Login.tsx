@@ -63,7 +63,9 @@ const Login = () => {
                             Email
                         </label>
                         <div>
-                            <input disabled={isLoading}
+                            <input
+                                id="email"
+                                disabled={isLoading}
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
                                 {...register("email")} />
                             <ErrorMessage errors={errors} name="email"
@@ -87,6 +89,7 @@ const Login = () => {
                         </div>
                         <div className="relative">
                             <input
+                                id="password"
                                 disabled={isLoading}
                                 className="block w-full rounde  d-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
                                 {...register("password")}
@@ -102,7 +105,7 @@ const Login = () => {
                     </div>
 
                     <div>
-                        <SubmitButton isLoading={isLoading} label="Ingresar" />
+                        <SubmitButton disabled={isLoading} isLoading={isLoading} label="Ingresar" />
                     </div>
                 </form>
                 <p className="mt-5 text-center text-sm text-f12-creame">

@@ -2,39 +2,54 @@ import { ApiAuth } from '@/api';
 import { isApiResponse, isErrorMessage } from '@/api/guards';
 import CustomToaster from '@/components/CustomToaster';
 import Logo from '@/components/Logo';
+import PasswordVisible from '@/components/PasswordVisible';
 import SubmitButton from '@/components/SubmitButton';
 import { useApiMiddleware } from '@/hooks/useApiMiddleware';
 import { EmailRecoverType } from '@/types';
 import { ErrorMessage } from '@hookform/error-message';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FC, ReactElement } from 'react';
+import { FC, ReactElement, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { z } from 'zod';
 
-const PasswordRecoverSchema = z.object({
-    email: z.string().min(1, { message: "Tienes que completar este campo!" }).email("Ingresa un email valido!"),
+const PasswordResetSchema = z.object({
+    password: z.string().min(3, { message: "Tiene que tener al menos 3 caracteres!" }),
 });
 
-type Schema = z.infer<typeof PasswordRecoverSchema>
+type Schema = z.infer<typeof PasswordResetSchema>
 
-
-const PasswordRecover: FC = (): ReactElement => {
+const PasswordReset: FC = (): ReactElement => {
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const { isLoading, apiCall } = useApiMiddleware();
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const { register, handleSubmit, formState: { errors } } = useForm<Schema>({
-        resolver: zodResolver(PasswordRecoverSchema),
+        resolver: zodResolver(PasswordResetSchema),
     })
-    const onSubmit = async (fields: Schema) => {
 
-        const response = await apiCall<EmailRecoverType>(() => ApiAuth.passwordRecover(fields.email))
-        console.log(response);
+    const togglePasswordVisibility = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setIsPasswordVisible(!isPasswordVisible);
+    }
+
+    const onSubmit = async (fields: Schema) => {
+        const oldPassword = searchParams.get("token");
+        const userEmail = searchParams.get("email");
+        console.log(userEmail)
+        const response = await apiCall<EmailRecoverType>(() => ApiAuth.passwordReset(fields.password, oldPassword, userEmail))
+
         if (isErrorMessage(response)) {
             toast.error(response);
         } else if (isApiResponse<EmailRecoverType>(response)) {
             const { statusCode, message } = response.data;
             if (statusCode == 201) {
                 toast.success(message);
+                setTimeout(() => {
+                    toast.remove();
+                    navigate('/');
+                }, 2000);
             }
         }
     }
@@ -44,23 +59,26 @@ const PasswordRecover: FC = (): ReactElement => {
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                 <Logo />
                 <h2 className="text-center text-3xl font-title font-bold tracking-widest uppercase text-f12-creame">
-                    Recuperar Contraseña
+                    Cambiar Contraseña
                 </h2>
             </div>
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-sm">
                 <form onSubmit={handleSubmit((data) => onSubmit(data))} className="space-y-6">
                     {/* EMAIL */}
                     <div className="h-[60px]">
-                        <label htmlFor="email" className="block text-sm font-medium leading-6 text-f12-creame">
-                            Email
+                        <label htmlFor="password" className="block text-sm font-medium leading-6 text-f12-creame">
+                            Password
                         </label>
-                        <div>
+                        <div className="relative">
                             <input
-                                id='email'
+                                id='password'
                                 disabled={isLoading}
-                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
-                                {...register("email")} />
-                            <ErrorMessage errors={errors} name="email"
+                                className="block w-full rounde  d-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-f12-orange sm:text-sm sm:leading-6"
+                                {...register("password")}
+                                type={isPasswordVisible ? "text" : "password"}
+                            />
+                            <PasswordVisible isPasswordVisible={isPasswordVisible} togglePasswordVisibility={togglePasswordVisibility} />
+                            <ErrorMessage errors={errors} name="password"
                                 render={({ message }) =>
                                     <p className="text-red-400 text-sm pt-1">{message}</p>
                                 }
@@ -83,4 +101,4 @@ const PasswordRecover: FC = (): ReactElement => {
     )
 };
 
-export default PasswordRecover;
+export default PasswordReset;

@@ -7,7 +7,7 @@ import { ClipboardEvent, useState } from "react";
 import UseUserStore from "@/store/user.store";
 import { formatPhone } from "@/utils";
 import { isApiResponse, isErrorMessage } from "@/api/guards";
-import { OtpType } from "@/types";
+import { OtpType, UserType } from "@/types";
 import { useNavigate } from "react-router-dom";
 import { useApiMiddleware } from "@/hooks/useApiMiddleware";
 import SubmitButton from "@/components/SubmitButton";
@@ -39,7 +39,7 @@ const Otp = () => {
             const { statusCode, message } = response.data;
             if (statusCode == 201) {
                 toast(message);
-                logIn(userState.user);
+                logIn(userState.user as UserType);
                 setTimeout(() => {
                     toast.remove();
                     navigate('/');
