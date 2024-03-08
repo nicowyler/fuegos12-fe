@@ -3,7 +3,6 @@ import * as z from "zod";
 import { zodResolver } from '@hookform/resolvers/zod';
 import CustomToaster from "@/components/CustomToaster";
 import { ErrorMessage } from '@hookform/error-message';
-import UseUserStore from "@/store/user.store";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { ApiAuth } from "@/api/Auth";
@@ -29,7 +28,6 @@ export type RegisterSchemaType = z.infer<typeof RegisterSchema>
 
 const Login = () => {
     const { isLoading, apiCall } = useApiMiddleware();
-    const userState = UseUserStore();
     const navigate = useNavigate();
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -48,21 +46,14 @@ const Login = () => {
 
         const response = await apiCall<AuthType>(() => ApiAuth.register(fields))
 
-        userState.saveUser({
-            email: fields.email,
-            password: fields.password,
-            fullName: {
-                firstName: fields.firstName,
-                lastName: fields.lastName
-            },
-            phone: fields.phoneNumber,
-            roles: ['USER']
-        })
-
         if (isErrorMessage(response)) {
             toast.error(response);
         } else if (isApiResponse<AuthType>(response)) {
-            navigate('/otp');
+            navigate('/otp', {
+                state: {
+                    phone: fields.phoneNumber
+                }
+            });
         }
     }
 

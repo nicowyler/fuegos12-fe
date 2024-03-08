@@ -8,7 +8,7 @@ import UseUserStore from "@/store/user.store";
 import { formatPhone } from "@/utils";
 import { isApiResponse, isErrorMessage } from "@/api/guards";
 import { OtpType, UserType } from "@/types";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useApiMiddleware } from "@/hooks/useApiMiddleware";
 import SubmitButton from "@/components/SubmitButton";
 import useAuth from "@/hooks/useAuth";
@@ -17,6 +17,7 @@ import useAuth from "@/hooks/useAuth";
 const Otp = () => {
     const { logIn } = useAuth();
     const userState = UseUserStore();
+    const location = useLocation();
     const { isLoading, apiCall } = useApiMiddleware();
     const [code, setCode] = useState("");
     const navigate = useNavigate();
@@ -24,11 +25,10 @@ const Otp = () => {
     console.log(userState)
 
     const sendCode = async () => {
-        let phone = "";
         if (code.length < 6) return;
-        if (userState.user?.phone) {
-            phone = userState.user?.phone
-        }
+        const phone = location.state.phone;
+        if (!phone) navigate('/');
+
         console.log(userState)
         const response = await apiCall<OtpType>(() => ApiAuth.otp(phone, code))
         console.log(response)

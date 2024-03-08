@@ -8,13 +8,13 @@ const CustomToaster = () => {
                 style: {
                     background: 'rgba(256, 256, 256, 0.95)',
                 },
-                duration: 10000000,
+                duration: 5000,
                 className: "w-full max-w-2xl p-0 flex justify-center items-center"
             }}>
                 {(t) => (
                     <ToastBar toast={t}>
                         {({ icon, message }) => (
-                            <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} flex justify-center flex-col items-center w-full  rounded-lg pointer-events-auto p-0`}
+                            <div className={`${t.visible ? 'animate-enter' : 'animate-leave'}max-w-2xl flex justify-center flex-col items-center w-full  rounded-lg pointer-events-auto p-0`}
                             >
                                 <div className='flex justify-between w-full p-4 pb-0'>
                                     <div className='flex justify-start items-center'>
