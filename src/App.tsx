@@ -1,52 +1,48 @@
-import { Routes, Route } from 'react-router-dom';
-import { Role } from '@/constants';
-import React from 'react';
-import LayoutAuth from '@/pages/LayoutAuth';
-import RequireAuth from '@/pages/RequireAuth';
-import Layout from '@/pages/Layout';
-import Authentificated from '@/pages/Authentificated';
-import MpFeedback from '@/pages/MercadoPago/MpFeedback';
-import PasswordRecover from '@/pages/PasswordRecover';
-import PasswordReset from '@/pages/PasswordReset';
+import React from 'react'
+import { AuthProvider } from "@/auth"
+import { useAuth } from "@/hooks"
+import { QueryClient, QueryClientProvider, QueryErrorResetBoundary } from "@tanstack/react-query"
+import { RouterProvider, createRouter } from '@tanstack/react-router'
+import { routeTree } from '@/routeTree.gen'
+import NotFound from '@/components/notFound'
 
-const Home = React.lazy(() => import("@/pages/Home"));
-const Login = React.lazy(() => import("@/pages/Login"));
-const Register = React.lazy(() => import("@/pages/Register"));
-const Otp = React.lazy(() => import("@/pages/Otp"));
-const Page404 = React.lazy(() => import("@/pages/Page404"));
-const Unauthorized = React.lazy(() => import("@/pages/Unauthorized"));
+// Create a new router instance
+const router = createRouter({
+  routeTree,
+  defaultPreload: 'intent',
+  context: {
+    auth: undefined!, // This will be set after we wrap the app in an AuthProvider
+  },
+  defaultNotFoundComponent: () => {
+    return <NotFound />
+  }
+})
 
-function App() {
-
-  return (
-    <Routes>
-
-      <Route element={<Authentificated />}>
-        <Route element={<LayoutAuth />}>
-          <Route path="login" element={<Login />} />
-          <Route path="forgot-password" element={<PasswordRecover />} />
-          <Route path="reset-password" element={<PasswordReset />} />
-          <Route path="register" element={<Register />} />
-          <Route path="otp" element={<Otp />} />
-        </Route>
-      </Route>
-
-
-      <Route element={<RequireAuth allowedRoles={[Role.USER]} />}>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path='mercado-pago'>
-            <Route path="success" element={<MpFeedback status="success" />} />
-            <Route path="failure" element={<MpFeedback status='failure' />} />
-            <Route path="pending" element={<MpFeedback status='pending' />} />
-          </Route>
-        </Route>
-        <Route path="unauthorized" element={<Unauthorized />} />
-      </Route>
-      {/* catch all */}
-      <Route path="*" element={<Page404 />} />
-    </Routes>
-  );
+// Register the router instance for type safety
+declare module '@tanstack/react-router' {
+  interface Register {
+    router: typeof router
+  }
 }
 
-export default App;
+// Create a client
+const queryClient = new QueryClient();
+
+function InnerApp() {
+  const auth = useAuth()
+  return <RouterProvider router={router} context={{ auth }} />
+}
+
+export default function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <QueryErrorResetBoundary>
+        {({ reset }) => (
+          <AuthProvider>
+            <InnerApp />
+          </AuthProvider>
+        )}
+      </QueryErrorResetBoundary>
+    </QueryClientProvider>
+  )
+}

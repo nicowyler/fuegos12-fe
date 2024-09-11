@@ -1,20 +1,12 @@
 /* eslint-disable no-unused-vars */
-import React from "react";
-
-export type TOrderData = {
-    id: string,
-    title: string,
-    quantity: number,
-    unit_price: number,
-    description: string
-}
+import { TProduct } from '@/types/products.types';
+import React from 'react';
 
 export type TPreference = string;
 
 export interface TMercadoPagoContextType {
-    preference: string | null;
-    isLoading: boolean;
-    orderData: TOrderData[] | null;
-    setOrderData: React.Dispatch<React.SetStateAction<TOrderData[] | null>>;
-    placeOrder: (order: TOrderData[]) => void;
+  carbonData: TProduct | null;
+  woodData: TProduct | null;
+  setCarbonData: React.Dispatch<React.SetStateAction<TProduct | null>>;
+  setWoodData: React.Dispatch<React.SetStateAction<TProduct | null>>;
 }

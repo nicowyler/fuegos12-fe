@@ -1,30 +1,31 @@
 import Loading from '@/components/Loading';
-import { FC, ReactElement, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { FC, ReactElement } from 'react';
 
 type PayButtonProps = {
-    preference: string | null,
     buttonLabel: string,
-    disabled: boolean
+    disabled?: boolean,
+    isLoading: boolean,
+    className?: string,
+    callback?: () => void
 };
 
-const PayButton: FC<PayButtonProps> = ({ preference, buttonLabel, disabled }: PayButtonProps): ReactElement => {
+function PayButton({ buttonLabel, disabled, callback, isLoading, className }: PayButtonProps): ReactElement {
 
-    const [loading, setLoading] = useState(false);
-
-    const redirect = () => {
-        setLoading(true);
-        setTimeout(() => {
-            preference && window.location.replace(preference);
-        }, 300);
+    const handleOnClick = () => {
+        callback && callback();
     }
 
     return (
-        <button
+        <Button
+            className={className}
+            type="submit"
+            variant="pay"
             disabled={disabled}
-            onClick={redirect}
-            className="w-full h-12 my-4 flex justify-center items-center rounded-md bg-sky-500 hover:bg-sky-600 disabled:opacity-30">
-            {loading ? <Loading size={6} color='white' /> : buttonLabel}
-        </button>
+            onClick={handleOnClick}
+        >
+            {isLoading ? <Loading alone size={6} color='white' /> : buttonLabel}
+        </Button>
     )
 };
 

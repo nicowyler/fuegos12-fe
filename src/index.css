@@ -1,17 +1,149 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
+/* 'f12-orange': '#D95F32',
+'f12-orange-light': '#EE845C',
+'f12-creame': '#FAF1C5',
+'f12-blue': '#74B7B2',
+'f12-blue-light': '#97E7E2', */
 
-  input[type="number"]::-webkit-inner-spin-button,
-  input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+:root {
+  --background: 0 0% 100%; /*hsl(0 0% 100%)*/
+  --foreground: 232, 16%, 19%; /*hsl(232, 16%, 19%)*/
+
+  --secondary-background: 234.4 58.14% 25.29%; /*hsl(234.4 58.14% 25.29%)*/
+
+  --card: 0 0% 100%; /*hsl(0 0% 100%)*/
+  --card-foreground: 224 71.4% 4.1%; /*hsl(224 71.4% 4.1%)*/
+
+  --popover: 0 0% 100%; /*hsl(0 0% 100%)*/
+  --popover-foreground: 224 71.4% 4.1%; /*hsl(224 71.4% 4.1%)*/
+
+  --primary: 16, 69%, 52%; /*hsl(16, 69%, 52%))*/
+  --primary-foreground: 50, 84%, 88%; /*hsl(50, 84%, 88%)*/
+
+  --secondary: 0 0% 31%; /*hsl(0 0% 31%)*/
+  --secondary-foreground: 50, 84%, 88%; /*hsl(50, 84%, 88%)*/
+
+  --highlight: 33.33 78.26% 54.9%; /*hsl(16, 81%, 65%)*/
+  --highlight-foreground: 50, 84%, 88%; /*hsl(50, 84%, 88%)*/
+
+  --info: 236 82% 66%; /*hsl(236 82% 66%)*/
+  --info-foreground: 0 0% 100%; /*hsl(0 0% 100%)*/
+
+  --muted: 214 20% 69%; /*hsl(214 20% 69)*/
+  --muted-foreground: 220 8.9% 46.1%; /*hsl(220 8.9% 46.1%)*/
+
+  --accent: 220 14.3% 95.9%; /*hsl(220 14.3% 95.9%)*/
+  --accent-foreground: 220.9 39.3% 11%; /*hsl(220.9 39.3% 11%)*/
+
+  --destructive: 352.83 81.54% 38.24%; /*hsl(352.83 81.54% 38.24%)*/
+  --destructive-foreground: 210 20% 98%; /*hsl(210 20% 98%)*/
+
+  --border: 225 11% 93%; /*hsl(225 11% 93%)*/
+  --input: 220 13% 91%; /*hsl(220 13% 91%)*/
+  --input-text: 0 1% 40%; /*hsl(0 1% 40%)*/
+  --ring: 236 82% 66%; /*hsl(224 71.4% 4.1%)*/
+
+  --radius: 0.3125rem;
+  --font-size: 0.875rem;
+
+  --glitter: url('https://assets.codepen.io/13471/silver-glitter-background.png');
+}
+
+@layer base {
+  :root {
+    font-family: 'Roboto', sans-serif;
+  }
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
 
-main {
-  width: 100%;
-  height: 100%;
+@layer utilities {
+  .CollapsibleContent {
+    overflow: hidden;
+  }
+  .CollapsibleContent[data-state='open'] {
+    animation: slideDown 300ms ease-out;
+  }
+  .CollapsibleContent[data-state='closed'] {
+    animation: slideUp 300ms ease-out;
+  }
+
+  @keyframes slideDown {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-collapsible-content-height);
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      height: var(--radix-collapsible-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+.fire::before,
+.fire::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.fire::before {
+  content: '';
+  background-image: var(--glitter), var(--glitter),
+    linear-gradient(
+      0deg,
+      white 0px,
+      #ff8951 5px,
+      #dcbc169c 30%,
+      transparent 70%
+    ),
+    radial-gradient(ellipse at bottom, transparent 30%, black 60%);
+  background-size:
+    350px 500px,
+    400px 650px,
+    100% 100%,
+    100% 100%;
+  background-blend-mode: hard-light, color-dodge, multiply;
+  background-position:
+    0px 0px,
+    0px 0px,
+    var(--gradientPos);
+  background-repeat: repeat, repeat, repeat, no-repeat;
+  mix-blend-mode: color-dodge;
+  filter: brightness(3.7) blur(7px) contrast(6);
+  animation: fire 1.75s linear infinite;
+  box-shadow: inset 0 -40px 50px -60px #63bbc5;
+}
+
+@keyframes fire {
+  0% {
+    background-position:
+      center 0px,
+      center 0px,
+      50% 100%,
+      center center;
+  }
+  100% {
+    background-position:
+      center -500px,
+      center -650px,
+      50% 100%,
+      center center;
+  }
 }

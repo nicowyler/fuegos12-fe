@@ -1,18 +1,22 @@
 /* eslint-disable no-unused-vars */
 import { TProduct } from '@/types/products.types';
-import { formatToArs } from '@/utils';
-import classNames from 'classnames';
+import { formatToArs } from '../lib/utils';
+import { cn } from "@/lib/utils"
 import { FC, ReactElement, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { MinusCircle, PlusCircle, Trash2 } from 'lucide-react';
 
 type ProductsProps = {
-    productsList: TProduct[],
+    product: TProduct,
     onProductSelected: (id: string) => void,
-    onProductRemoved: (id: string) => void
+    onProductRemoved: (id: string) => void,
+    onRemoveAllProducts: () => void
 };
 
-const Products: FC<ProductsProps> = ({ productsList, onProductSelected, onProductRemoved }: ProductsProps): ReactElement => {
+const Products: FC<ProductsProps> = ({ product, onProductSelected, onProductRemoved, onRemoveAllProducts }: ProductsProps): ReactElement => {
     const [animateNumber, setAnimateNumber] = useState([false, ""]);
-    const [productClicked, setProductClicked] = useState(false);
+    const [removeAnim, setRemoveAnim] = useState([false, ""]);
+    const [, setProductClicked] = useState(false);
 
     const onProductChange = (id: string) => {
         onProductSelected(id);
@@ -24,62 +28,72 @@ const Products: FC<ProductsProps> = ({ productsList, onProductSelected, onProduc
         }, 500);
     }
 
+    const onRemovingProduct = (id: string) => {
+        setRemoveAnim([true, id]);
+        setTimeout(() => {
+            setRemoveAnim([false, id]);
+            onProductRemoved(id);
+        }, 300);
+    }
+
     return (
         <div className="bg-white py-5 md:my-16">
-            <div className="mx-auto md:py-5 max-w-2xl px-4 ">
-
+            <div className="mx-auto md:py-5 max-w-2xl px-4">
+                <h1 className='text-1xl mb-5 w-full text-balance text-center'>¿Cuantas bolsas de <span className='font-bold'>{product.title}</span> queres comprar?</h1>
                 <div className="grid grid-cols-1 gap-x-6 sm:grid-cols-2 gap-y-5 px-7 md:px-0">
-                    {productsList.map((product) => (
+                    <>
                         <div key={product.id} className="group">
-                            <div className="aspect-h-2 aspect-w-3 max-h-72 overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7 relative">
-                                <div className='mt-2 ml-2'>
-                                    <h3 className="text-md font-bold  text-gray-500">{product.title}</h3>
-                                    <div className="text-sm text-gray-500">{formatToArs(product.unit_price)}</div>
-                                </div>
-                                <div className='w-full flex justify-end items-start'>
-                                    {product.quantity > 0 &&
-                                        <div className='flex items-center z-10'>
-                                            <button onClick={() => onProductRemoved(product.id)}
-                                                className='text-f12-black uppercase text-sm mr-2 bg-f12-blue bg-opacity-20 rounded-md h-10 w-12 flex justify-center items-center animate-fade-in'>
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                                </svg>
-
+                            <div className="aspect-h-2 aspect-w-3 max-h-72 overflow-hidden rounded-t-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7 relative">
+                                <div className='w-full flex justify-center items-start min-h-[60px]'>
+                                    {product.quantity! <= 0 &&
+                                        <Button className='mt-2 w-40 animate-fade-in' onClick={() => onProductChange(product.id)}>
+                                            Agragar
+                                        </Button>
+                                    }
+                                    {product.quantity! > 0 &&
+                                        <div className='flex bg-orange-500 rounded-b-md animate-fade-in-down animate-duration-200'>
+                                            <button onClick={() => onRemovingProduct(product.id)}
+                                                className='text-sm text-white bg-f12-blue rounded-bl-md h-10 w-12 flex justify-center items-center '>
+                                                <MinusCircle />
                                             </button>
-                                            <div className='bg-orange-500 h-10 w-12 flex justify-center items-center text-white rounded-md px-2 overflow-hidden'>
-                                                <span className={classNames('text-base text-f12-creame font-bold', {
-                                                    'animate-fade-in-down animate-duration-300': animateNumber[0] && animateNumber[1] === product.id,
+
+                                            <div className='h-10 w-12 flex justify-center items-center text-white px-2 overflow-hidden animate-fade-in-down'>
+                                                <span className={cn('text-base text-f12-creame font-bold', {
+                                                    'animate-fade-in-down animate-duration-250': animateNumber[0] && animateNumber[1] === product.id,
+                                                    'animate-fade-out-down animate-duration-250': removeAnim[0] && removeAnim[1] === product.id
                                                 })}>
                                                     {product.quantity}
                                                 </span>
                                             </div>
+                                            <button onClick={() => onProductChange(product.id)}
+                                                className='text-sm mr-2 bg-f12-blue text-white rounded-br-md h-10 w-12 flex justify-center items-center'>
+                                                <PlusCircle />
+                                            </button>
                                         </div>
                                     }
-                                    <button onClick={() => onProductChange(product.id)} className='absolute z-0 w-full h-full cursor-pointer'></button>
+                                    {
+                                        product.quantity! > 0 &&
+                                        <button onClick={() => onRemoveAllProducts()}
+                                            className='absolute right-0 text-sm text-foreground rounded-br-md h-10 w-12 flex justify-center items-center animate-fade-in'>
+                                            <Trash2 />
+                                        </button>
+                                    }
                                 </div>
                                 <div className='w-full h-full flex justify-center items-end pointer-events-none'>
                                     <img
-                                        src={product.image.href}
-                                        alt={product.image.alt}
-                                        className="h-4/5 w-4/5 object-scale-down object-center group-hover:opacity-75"
+                                        src={product.picture_url}
+                                        alt={product.description}
+                                        className="h-4/5 w-4/5 object-scale-down object-center"
                                     />
                                 </div>
                             </div>
+                            <div className='flex justify-between items-center px-10 py-2 border border-gray-200 rounded-b'>
+                                <h3 className="text-md font-bold  text-gray-500">Precio</h3>
+                                <div className="text-sm text-gray-500 font-bold">{formatToArs(product.unit_price)}</div>
+                            </div>
                         </div>
-                    ))}
 
-                    <div className={classNames("text-balance text-gray-400 rounded-lg border-gray-200 border-solid border-2 p-10 flex flex-col justify-center items-center sm:items-start transition-all duration-500 mt-0 sm:col-span-2", {
-                        'mt-16 opacity-0': productClicked
-                    })}>
-                        <div className='text-f12-orange w-full flex pb-3'>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 mr-3">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0M3.124 7.5A8.969 8.969 0 0 1 5.292 3m13.416 0a8.969 8.969 0 0 1 2.168 4.5" />
-                            </svg>
-                            <p>Como Funciona?</p>
-                        </div>
-                        <p className='text-gray-600'>Presiona en alguno del los productos para iniciar tu compra!</p>
-                    </div>
-
+                    </>
                 </div>
             </div>
         </div>

@@ -18,20 +18,17 @@
     "types": ["node"],
     "paths": {
       "@/*": ["./src/*", "./dist/*", ""],
-      "routes/*": ["./src/routes/*"],
-      "services/*": ["./src/api/*"],
-      "pages/*": ["./src/pages/*"],
+      "services/*": ["src/lib/api/*"],
       "context/*": ["./src/context/*"],
-      "api/*": ["./src/api/*"],
+      "lib/*": ["src/lib/*"],
       "constants/*": ["./src/constants/*"]
     },
-
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
+    "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }
