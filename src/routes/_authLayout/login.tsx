@@ -57,7 +57,7 @@ function Login() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      const redirectTo = "/";
+      const redirectTo = "/dashboard?tab=carbon";
       router.history.push(redirectTo, { replace: true });
     }
   }, [isAuthenticated, router.history]);
