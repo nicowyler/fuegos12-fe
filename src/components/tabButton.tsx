@@ -1,4 +1,3 @@
-import FireAnim from "@/components/fireAnim";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Link } from '@tanstack/react-router'

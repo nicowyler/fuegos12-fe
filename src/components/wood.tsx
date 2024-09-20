@@ -14,9 +14,7 @@ export default function WoodPage({ defaultproduct }: { defaultproduct: TProduct 
 
     useEffect(() => {
         if (product) {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { image, ...productWithoutImage } = product;
-            setWoodData(productWithoutImage);
+            setWoodData(product);
         }
     }, [product, setWoodData]);
 

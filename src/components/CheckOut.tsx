@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 import { useToast } from "@/components/ui/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { createPreference } from "@/lib/api/mercadoPago";
-import FireLoading from "@/components/FireLoading";
+import FireLoading from "@/components/fireLoading";
 import { TProduct } from "@/types/products.types";
 import UseUserStore from "@/store/user.store";
 

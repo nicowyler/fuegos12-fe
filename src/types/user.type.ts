@@ -1,5 +1,3 @@
-import { CompanySchemaType } from '@/lib/configuration/schemas/schema';
-
 export type UserType = {
   id?: string;
   email: string;
@@ -10,7 +8,6 @@ export type UserType = {
 export interface AuthType {
   data: {
     user: UserType;
-    company: CompanySchemaType;
   };
 }
 

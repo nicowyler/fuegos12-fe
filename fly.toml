@@ -1,0 +1,31 @@
+# fly.toml app configuration file generated for fuegos12-fe-restless-snow-8918 on 2024-09-20T17:00:39-03:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'fuegos12-fe-restless-snow-8918'
+primary_region = 'scl'
+
+[build]
+
+[env]
+  PORT = '3000'
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+  # Route all unknown paths to index.html for SPA support
+  [[http_service.handlers]]
+    handler = "error_page"
+    status = [404]
+    error_page = "/"
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1

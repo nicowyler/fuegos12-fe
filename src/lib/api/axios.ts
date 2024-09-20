@@ -1,6 +1,7 @@
 import axios from 'axios';
 const secure = import.meta.env.PROD ? 'https://' : 'http://';
-const BASE_URL = `${secure}${import.meta.env.VITE_API_URL}`;
+const domain = import.meta.env.PROD ? 'fuegos12-be.fly.dev' : import.meta.env.VITE_API_URL;
+const BASE_URL = `${secure}${domain}`;
 
 export const axiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -16,10 +17,7 @@ axiosPrivate.interceptors.response.use(
   (response) => response,
   async (error) => {
     const prevRequest = error?.config;
-    if (
-      error?.response?.status === 401 ||
-      (error?.response?.status === 403 && !prevRequest?.sent)
-    ) {
+    if (error?.response?.status === 401 || (error?.response?.status === 403 && !prevRequest?.sent)) {
       // Handle 401 and specific 403 cases here
       prevRequest.sent = true;
       await refresh();
@@ -27,7 +25,7 @@ axiosPrivate.interceptors.response.use(
     }
     // If not handled, throw the error for catch block
     throw error;
-  }
+  },
 );
 
 const refresh = async () => {

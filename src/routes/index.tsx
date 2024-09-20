@@ -1,4 +1,4 @@
-import FireLoading from '@/components/FireLoading';
+import FireLoading from '@/components/fireLoading';
 import { cn } from '@/lib/utils'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useState } from 'react';

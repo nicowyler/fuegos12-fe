@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import TabButton from '../../../components/tabButton';
 import { fetchProducts } from '../../../lib/api/products'
 import { useQuery } from '@tanstack/react-query';
-import FireLoading from '@/components/FireLoading';
+import FireLoading from '@/components/fireLoading';
 
 type TabSearch = { tab: string };
 

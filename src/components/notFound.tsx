@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from '@tanstack/react-router';
 import { useLottie } from "lottie-react";
 import notFoundAnim from "../assets/lottie/not-found.json";

@@ -1,0 +1,7 @@
+# flyctl launch added from .gitignore
+**/dist
+**/node_modules
+**/tsconfig.tsbuildinfo
+**/npm-error.log
+fly.toml
+.env.*

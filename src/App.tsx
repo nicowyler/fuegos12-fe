@@ -1,10 +1,10 @@
-import React from 'react'
 import { AuthProvider } from "@/auth"
 import { useAuth } from "@/hooks"
 import { QueryClient, QueryClientProvider, QueryErrorResetBoundary } from "@tanstack/react-query"
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { routeTree } from '@/routeTree.gen'
 import NotFound from '@/components/notFound'
+import ErrorBoundary from "@/ErrorBoundary"
 
 // Create a new router instance
 const router = createRouter({
@@ -35,14 +35,14 @@ function InnerApp() {
 
 export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <QueryErrorResetBoundary>
-        {({ reset }) => (
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <QueryErrorResetBoundary>
           <AuthProvider>
             <InnerApp />
           </AuthProvider>
-        )}
-      </QueryErrorResetBoundary>
-    </QueryClientProvider>
+        </QueryErrorResetBoundary>
+      </QueryClientProvider>
+    </ErrorBoundary>
   )
 }

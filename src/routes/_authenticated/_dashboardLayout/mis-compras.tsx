@@ -2,7 +2,7 @@ import UseUserStore from '@/store/user.store';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { getTransactions } from '@/lib/api/transactions';
-import FireLoading from '@/components/FireLoading';
+import FireLoading from '@/components/fireLoading';
 import { Transaction, TransactionProduct } from '@/types';
 
 export const Route = createFileRoute('/_authenticated/_dashboardLayout/mis-compras')({
@@ -13,7 +13,7 @@ function MisCompras() {
     const userState = UseUserStore();
     const userId = userState.user?.id;
 
-    const { data, isLoading, isError } = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: ['products', userId],
         queryFn: () => getTransactions(userId),
         enabled: !!userId,

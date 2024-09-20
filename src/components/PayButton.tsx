@@ -1,6 +1,6 @@
 import Loading from '@/components/Loading';
 import { Button } from '@/components/ui/button';
-import { FC, ReactElement } from 'react';
+import { ReactElement } from 'react';
 
 type PayButtonProps = {
     buttonLabel: string,
