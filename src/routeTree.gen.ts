@@ -11,7 +11,9 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as TermsImport } from './routes/terms'
 import { Route as FaqImport } from './routes/faq'
+import { Route as BasesImport } from './routes/bases'
 import { Route as AuthenticatedImport } from './routes/_authenticated'
 import { Route as AuthLayoutImport } from './routes/_authLayout'
 import { Route as IndexImport } from './routes/index'
@@ -29,8 +31,18 @@ import { Route as AuthenticatedDashboardLayoutMercadoPagoSuccessImport } from '.
 
 // Create/Update Routes
 
+const TermsRoute = TermsImport.update({
+  path: '/terms',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const FaqRoute = FaqImport.update({
   path: '/faq',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const BasesRoute = BasesImport.update({
+  path: '/bases',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -136,11 +148,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedImport
       parentRoute: typeof rootRoute
     }
+    '/bases': {
+      id: '/bases'
+      path: '/bases'
+      fullPath: '/bases'
+      preLoaderRoute: typeof BasesImport
+      parentRoute: typeof rootRoute
+    }
     '/faq': {
       id: '/faq'
       path: '/faq'
       fullPath: '/faq'
       preLoaderRoute: typeof FaqImport
+      parentRoute: typeof rootRoute
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsImport
       parentRoute: typeof rootRoute
     }
     '/_authLayout/forgotPassword': {
@@ -244,7 +270,9 @@ export const routeTree = rootRoute.addChildren({
         AuthenticatedDashboardLayoutMercadoPagoSuccessRoute,
       }),
   }),
+  BasesRoute,
   FaqRoute,
+  TermsRoute,
 })
 
 /* prettier-ignore-end */
@@ -258,7 +286,9 @@ export const routeTree = rootRoute.addChildren({
         "/",
         "/_authLayout",
         "/_authenticated",
-        "/faq"
+        "/bases",
+        "/faq",
+        "/terms"
       ]
     },
     "/": {
@@ -279,8 +309,14 @@ export const routeTree = rootRoute.addChildren({
         "/_authenticated/_dashboardLayout"
       ]
     },
+    "/bases": {
+      "filePath": "bases.tsx"
+    },
     "/faq": {
       "filePath": "faq.tsx"
+    },
+    "/terms": {
+      "filePath": "terms.tsx"
     },
     "/_authLayout/forgotPassword": {
       "filePath": "_authLayout/forgotPassword.tsx",

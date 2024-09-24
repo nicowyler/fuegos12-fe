@@ -1,13 +1,8 @@
-export type UserType = {
-  id?: string;
-  email: string;
-  name: string;
-  accountType: string;
-};
+import { User } from '@supabase/supabase-js';
 
 export interface AuthType {
   data: {
-    user: UserType;
+    user: User;
   };
 }
 
@@ -23,7 +18,7 @@ export interface OtpType {
 
 export type EmailRecoverType = string;
 
-export type UserList = Omit<UserType, 'accountType' | 'name'>;
+export type UserList = Omit<User, 'accountType' | 'name'>;
 
 export type Token = string;
 
@@ -34,16 +29,11 @@ export type TokensType = {
 };
 
 export interface AuthContextType {
-  user: UserType | null;
+  user: User | null;
   isAuthenticated: boolean;
-  logIn: (data: UserType) => void;
-  logOut: () => Promise<unknown>;
+  isLoading: boolean;
+  signUp: (email: string, password: string) => Promise<User | null>;
+  logIn: (data: User) => void;
+  logOut: () => void;
+  signInWithGoogle: () => void;
 }
-
-export type GroupedPermissions = {
-  [key: string]: {
-    create: boolean;
-    edit: boolean;
-    delete: boolean;
-  };
-};

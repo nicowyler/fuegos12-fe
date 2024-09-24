@@ -5,9 +5,7 @@ export const useAuth = () => {
   const context = useContext(AuthContext);
   const { isAuthenticated } = context;
 
-  useDebugValue(isAuthenticated, (isAuthenticated) =>
-    isAuthenticated ? 'Logged In' : 'Logged Out'
-  );
+  useDebugValue(isAuthenticated, (isAuthenticated) => (isAuthenticated ? 'Logged In' : 'Logged Out'));
 
   return context;
 };

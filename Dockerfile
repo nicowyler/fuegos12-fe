@@ -28,11 +28,17 @@ RUN npm ci --include=dev
 COPY --link . .
 
 # Build application
-RUN npm run build
+# Build application
+RUN --mount=type=secret,id=VITE_API_URL \
+    --mount=type=secret,id=VITE_SUPABASE_URL \
+    --mount=type=secret,id=VITE_SUPABASE_ANON_KEY \
+    VITE_API_URL="$(cat /run/secrets/VITE_API_URL)" \
+    VITE_SUPABASE_URL="$(cat /run/secrets/VITE_SUPABASE_URL)" \
+    VITE_SUPABASE_ANON_KEY="$(cat /run/secrets/VITE_SUPABASE_ANON_KEY)" \
+    npm run build
 
 # Remove development dependencies
 RUN npm prune --omit=dev
-
 
 # Final stage for app image
 FROM nginx

@@ -8,11 +8,11 @@ import { useMutation } from "@tanstack/react-query";
 import { createPreference } from "@/lib/api/mercadoPago";
 import FireLoading from "@/components/fireLoading";
 import { TProduct } from "@/types/products.types";
-import UseUserStore from "@/store/user.store";
+import { useAuth } from "@/hooks";
 
 const Checkout: FC = (): ReactElement => {
   const { carbonData, woodData } = useContext(MercadoPagoContext);
-  const { user } = UseUserStore();
+  const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const mutation = useMutation({
     mutationFn: createPreference,
@@ -34,6 +34,7 @@ const Checkout: FC = (): ReactElement => {
     const orderArray: TProduct[] = [carbonData, woodData].filter(
       (item): item is TProduct => item !== null && item !== undefined && item.quantity! > 0
     );
+    console.log("user:: ", user);
     await mutation.mutateAsync({ order: orderArray, userId: user?.id });
   }
 

@@ -2,7 +2,12 @@ import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: async ({ context, location }) => {
-    console.debug('This route is protected, checking authentication...');
+    console.debug('Checking authentication...', context.auth.isAuthenticated);
+    // Handle a potential loading state for async auth check
+    if (context.auth.isLoading) {
+      console.debug('Authentication is loading...');
+      return; // Allow loading to complete
+    }
 
     if (!context.auth.isAuthenticated) {
       console.debug('Not authenticated, redirecting to login...');
@@ -10,15 +15,12 @@ export const Route = createFileRoute('/_authenticated')({
         to: '/login',
         search: {
           // Use the current location to power a redirect after login
-          // (Do not use `router.state.resolvedLocation` as it can
-          // potentially lag behind the actual current location)
           redirect: location.href,
         },
       });
     }
 
     console.debug('Authenticated!');
-
     return context;
   },
   component: AuthenticatedRoute,

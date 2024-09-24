@@ -8,7 +8,6 @@ export const Route = createFileRoute('/')({
     component: () => <InitialScreen />
 })
 
-
 export default function InitialScreen() {
     const [bgAnim, setBgAnim] = useState(false);
     const router = useRouter();

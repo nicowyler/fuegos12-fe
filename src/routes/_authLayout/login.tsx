@@ -12,7 +12,7 @@ import LoadingIndicator from '@/components/loadingIndicator';
 import Card, { CardBody, CardFooter, CardHeader } from '@/components/card';
 import PasswordInput from '@/components/passwordInput';
 import { z } from 'zod';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export const Route = createFileRoute('/_authLayout/login')({
   component: () => <Login />,
@@ -26,7 +26,8 @@ const LoginSchema = z.object({
 type Schema = z.infer<typeof LoginSchema>
 
 function Login() {
-  const { logIn, isAuthenticated } = useAuth();
+  const { logIn, isAuthenticated, signInWithGoogle } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast()
   const mutation = useMutation({ mutationFn: login })
@@ -55,6 +56,11 @@ function Login() {
     }
   }
 
+  function handleSignInWithGoogle() {
+    setIsLoading(true);
+    signInWithGoogle();
+  }
+
   useEffect(() => {
     if (isAuthenticated) {
       const redirectTo = "/dashboard?tab=carbon";
@@ -67,15 +73,12 @@ function Login() {
       <form onSubmit={form.handleSubmit(onSubmit)} className='w-full h-full'>
         <Card className='border-none'>
           <CardHeader>
-            <div className='flex flex-col justify-center'>
-              <h2 className="text-2xl md:text-3xl font-black text-f12-black">
-                Ingresa a tu cuenta
-              </h2>
-              <p className='text-muted text-sm md:text-base'>Ingresa tu email y contraseña para entrar a tu cuenta</p>
-            </div>
+            <h2 className="text-2xl md:text-3xl font-black text-f12-black ml-4">
+              Ingresa a tu cuenta
+            </h2>
           </CardHeader>
-          <CardBody className='w-full flex justify-center px-10 h-auto' >
-            <div className='w-full space-y-6'>
+          <CardBody className='w-full flex px-10 h-full py-3' >
+            <div className='w-full space-y-4'>
               <FormField
                 control={form.control}
                 name="email"
@@ -94,7 +97,16 @@ function Login() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel id='password'>Contraseña</FormLabel>
+                    <FormLabel id='password' className='flex justify-between items-end mt-5'>
+                      <span>
+                        Contraseña
+                      </span>
+                      <Link to="/forgotPassword">
+                        <Button className='text-primary p-0 m-0 h-0' variant="link">
+                          Olvidaste tu contraseña?
+                        </Button>
+                      </Link>
+                    </FormLabel>
                     <FormControl>
                       <div className='relative'>
                         <PasswordInput fieldName={field.name} />
@@ -105,17 +117,30 @@ function Login() {
                 )}
               />
               <div className='flex justify-center flex-col items-center'>
-                <Button disabled={mutation.isPending} className='min-w-[200px] mb-6' type="submit">
+                <Button disabled={mutation.isPending} className='w-full mb-2' type="submit">
                   {mutation.isPending ? <LoadingIndicator className="w-4 h-4 text-primary-foreground" /> : 'Ingresar'}
                 </Button>
-                <p className='text-sm h-2'>
-                  ¿Olvidaste tu contraseña?
-                </p>
-                <Link to="/forgotPassword">
-                  <Button className='text-primary p-0 m-0' variant="link">
-                    Recuperar Contraseña
-                  </Button>
-                </Link>
+              </div>
+              <div className='flex justify-center flex-col items-center'>
+                <div className='w-full flex justify-center items-center gap-3 mb-4'>
+                  <div className='border-t border-muted/50 w-1/3'></div>
+                  <div className='text-muted/50'>o</div>
+                  <div className='border-t border-muted/50 w-1/3'></div>
+                </div>
+                <Button className='w-full' variant="secondary" type="button" onClick={() => handleSignInWithGoogle()}>
+                  {isLoading ?
+                    <LoadingIndicator className="w-4 h-4 text-primary-foreground" />
+                    : (
+                      <>
+                        <svg className="mr-2 -ml-1 w-4 h-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path></svg>
+                        <span>
+                          Iniciar con google
+                        </span>
+                      </>
+                    )
+                  }
+                </Button>
+
               </div>
             </div>
           </CardBody>

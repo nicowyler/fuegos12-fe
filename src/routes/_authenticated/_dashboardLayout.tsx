@@ -9,9 +9,6 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { useMutation } from '@tanstack/react-query';
-import { toast } from '@/components/ui/use-toast';
-import { logout } from '@/lib/auth';
 import { useAuth } from '@/hooks';
 import { useEffect, useState } from 'react';
 
@@ -21,22 +18,11 @@ export const Route = createFileRoute('/_authenticated/_dashboardLayout')({
 
 export default function DashboardLayout() {
     const [open, setOpen] = useState(false);
-    const mutation = useMutation({ mutationFn: logout })
     const { logOut, isAuthenticated } = useAuth();
     const router = useRouter();
 
     const closeSession = async () => {
-        const response = await mutation.mutateAsync();
-
-        if (response.error) {
-            toast({
-                variant: "destructive",
-                title: "Error",
-                description: response.error,
-            })
-        } else if (response.data) {
-            logOut();
-        }
+        logOut();
     }
 
     function linkClick() {

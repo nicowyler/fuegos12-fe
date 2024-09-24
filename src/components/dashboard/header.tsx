@@ -1,11 +1,7 @@
 import { CircleHelp, Bell, CircleUserRound } from "lucide-react"
-import { Link, useRouter } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import { useMutation } from "@tanstack/react-query"
-import { logout } from "@/lib/auth"
-import { toast } from "@/components/ui/use-toast"
 import { useAuth } from "@/hooks"
-import { useEffect } from "react"
 
 type Props = {
     title?: {
@@ -15,30 +11,11 @@ type Props = {
 }
 
 export function DashboardHeader({ title }: Props) {
-    const mutation = useMutation({ mutationFn: logout })
-    const { logOut, isAuthenticated } = useAuth();
-    const router = useRouter();
+    const { logOut } = useAuth();
 
     const closeSession = async () => {
-        const response = await mutation.mutateAsync();
-
-        if (response.error) {
-            toast({
-                variant: "destructive",
-                title: "Error",
-                description: response.error,
-            })
-        } else if (response.data) {
-            logOut();
-        }
+        logOut();
     }
-
-    useEffect(() => {
-        if (!isAuthenticated) {
-            const redirectTo = "/login";
-            router.history.push(redirectTo, { replace: true });
-        }
-    }, [isAuthenticated, router.history]);
 
     return (
         <div className='h-24 w-full flex items-center justify-between px-5'>
