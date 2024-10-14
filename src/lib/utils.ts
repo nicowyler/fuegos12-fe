@@ -17,13 +17,17 @@ export function decryptQueryParam(encryptedParam: string): string {
   return bytes.toString(CryptoJS.enc.Utf8);
 }
 
-export function formatDate(dateString: string) {
+export function formatDate(
+  dateString: string,
+  splited?: boolean,
+): string | { day: string; month: string; year: string } {
   const date = new Date(dateString);
 
   const day = date.getDate();
   const month = date.toLocaleString('es-ES', { month: 'long' });
   const year = date.getFullYear();
 
+  if (splited === true) return { day: `${day}`, month: `${month}`, year: `${year}` };
   return `${day} de ${month} del ${year}`;
 }
 
@@ -40,10 +44,7 @@ export function splitFullName(fullName: string): {
 
 export function arraysAreEqual<T>(arr1: T[], arr2: T[]): boolean {
   // Sort and compare arrays
-  return (
-    arr1.length === arr2.length &&
-    arr1.sort().join(',') === arr2.sort().join(',')
-  );
+  return arr1.length === arr2.length && arr1.sort().join(',') === arr2.sort().join(',');
 }
 
 export function formatPhone(phone: string | undefined) {
@@ -59,7 +60,12 @@ export function formatToArs(price: number) {
   const ArPesos = new Intl.NumberFormat('es-AR', {
     style: 'currency',
     currency: 'ARS',
+    minimumFractionDigits: 2,
   });
   const formated = ArPesos.format(price);
   return formated;
+}
+
+export function capitalizeFirstLetter(val: string) {
+  return val.charAt(0).toUpperCase() + val.slice(1);
 }

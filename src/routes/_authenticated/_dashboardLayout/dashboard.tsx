@@ -1,14 +1,18 @@
 import CarbonPage from '@/components/carbon'
 import Checkout from '@/components/CheckOut';
 import WoodPage from '@/components/wood'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useEffect, useState } from 'react';
 import TabButton from '../../../components/tabButton';
 import { fetchProducts } from '../../../lib/api/products'
 import { useQuery } from '@tanstack/react-query';
 import FireLoading from '@/components/fireLoading';
+import { useSwipeable } from 'react-swipeable';
 
 type TabSearch = { tab: string };
+
+const NEXT = "NEXT";
+const PREV = "PREV";
 
 const tabs = {
   wood: 'wood',
@@ -31,6 +35,8 @@ export default function ProductsList() {
   })
   const [tabPosition, setTabPosition] = useState("0%");
   const { tab } = Route.useSearch();
+  const router = useRouter();
+
 
   useEffect(() => {
     if (tab === tabs.wood) {
@@ -40,8 +46,22 @@ export default function ProductsList() {
     }
   }, [tab])
 
+  function slide(direction: typeof NEXT | typeof PREV) {
+    const redirectTo = "/dashboard?tab=" + tabs[direction === "NEXT" ? "wood" : "carbon"];
+    router.history.push(redirectTo, { replace: true });
+  }
+
+  const handlers = useSwipeable({
+    onSwipedLeft: () => slide(NEXT),
+    onSwipedRight: () => slide(PREV),
+    swipeDuration: 500,
+    preventScrollOnSwipe: true,
+    trackMouse: true
+  });
+
+
   return (
-    <div className='w-[200vw] flex overflow-hidden'>
+    <div className='w-[200vw] h-[calc(100vh-64px)] flex overflow-hidden' {...handlers}>
       {isLoading &&
         <FireLoading />
       }

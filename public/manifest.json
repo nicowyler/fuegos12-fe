@@ -1,0 +1,30 @@
+{
+    "name": "Fuegos 12 de Julio",
+    "short_name": "F12DJ",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#FFFFFF",
+    "icons": [
+        {
+            "src": "/android/512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "/android/192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/android/96x96.png",
+            "sizes": "96x96",
+            "type": "image/png"
+        },
+        {
+            "src": "/android/72x72.png",
+            "sizes": "72x72",
+            "type": "image/png"
+        }
+    ]
+}

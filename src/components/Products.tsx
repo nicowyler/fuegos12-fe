@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars */
 import { TProduct } from '@/types/products.types';
-import { formatToArs } from '../lib/utils';
-import { cn } from "@/lib/utils"
 import { FC, ReactElement, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { MinusCircle, PlusCircle, Trash2 } from 'lucide-react';
+import LoadingImage from '@/components/LoadingImage';
+import { cn, formatToArs } from '@/lib/utils';
 
 type ProductsProps = {
     product: TProduct,
@@ -79,11 +79,11 @@ const Products: FC<ProductsProps> = ({ product, onProductSelected, onProductRemo
                                         </button>
                                     }
                                 </div>
-                                <div className='w-full h-full flex justify-center items-end pointer-events-none'>
-                                    <img
+                                <div className='w-full h-full min-h-[145px] flex justify-center items-center pointer-events-none'>
+                                    <LoadingImage
                                         src={product.picture_url}
                                         alt={product.description}
-                                        className="h-4/5 w-4/5 object-scale-down object-center"
+                                        aspectRatio='3/2'
                                     />
                                 </div>
                             </div>

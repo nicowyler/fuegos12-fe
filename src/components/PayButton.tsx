@@ -24,7 +24,7 @@ function PayButton({ buttonLabel, disabled, callback, isLoading, className }: Pa
             disabled={disabled}
             onClick={handleOnClick}
         >
-            {isLoading ? <Loading alone size={6} color='white' /> : buttonLabel}
+            {isLoading ? <Loading alone size={5} color='white' /> : buttonLabel}
         </Button>
     )
 };

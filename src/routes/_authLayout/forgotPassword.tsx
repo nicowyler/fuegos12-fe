@@ -4,10 +4,9 @@ import { Button } from '@/components/ui/button';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
-import { passwordRecover } from '@/lib/auth';
+import { useAuth } from '@/hooks';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { CircleCheckBig } from 'lucide-react';
 import { useState } from 'react';
@@ -25,29 +24,37 @@ const PssswordRecoverSchema = z.object({
 type Schema = z.infer<typeof PssswordRecoverSchema>
 
 function ForgotPassword() {
+    const { recoverPassword, isLoading } = useAuth();
     const { toast } = useToast()
-    const mutation = useMutation({ mutationFn: passwordRecover })
     const [emailSent, setEmailSent] = useState(false);
 
     const form = useForm<Schema>({
         resolver: zodResolver(PssswordRecoverSchema),
-        disabled: mutation.isPending,
+        disabled: isLoading,
         defaultValues: {
             email: "",
         },
     })
 
     const onSubmit = async (fields: Schema) => {
-        const response = await mutation.mutateAsync(fields.email);
-
-        if (response.error) {
-            toast({
-                variant: "destructive",
-                title: "Error",
-                description: response.error,
-            })
-        } else if (response.data) {
+        try {
+            await recoverPassword(fields.email);
             setEmailSent(true);
+        } catch (err) {
+            if (err instanceof Error) {
+                toast({
+                    variant: "destructive",
+                    title: "Error",
+                    description: err.message,
+                });
+            } else {
+                // Handle any other unknown errors that are not instances of Error
+                toast({
+                    variant: "destructive",
+                    title: "Unknown error",
+                    description: "An unexpected error occurred",
+                });
+            }
         }
     }
 
@@ -94,8 +101,8 @@ function ForgotPassword() {
                                 )
                         }
                         <div className='flex justify-center'>
-                            <Button disabled={mutation.isPending || emailSent} className='min-w-[200px]' type="submit">
-                                {mutation.isPending ? <LoadingIndicator className="w-4 h-4 text-primary-foreground" /> : 'Enviar'}
+                            <Button disabled={isLoading || emailSent} className='min-w-[200px]' type="submit">
+                                {isLoading ? <LoadingIndicator className="w-4 h-4 text-primary-foreground" /> : 'Enviar'}
                             </Button>
                         </div>
                     </CardBody>

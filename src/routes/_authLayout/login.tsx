@@ -1,8 +1,6 @@
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
 import { zodResolver, } from '@hookform/resolvers/zod';
 import { useForm } from "react-hook-form"
-import { useMutation } from '@tanstack/react-query';
-import { login } from '@/lib/auth';
 import { useAuth } from '@/hooks';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,7 +10,7 @@ import LoadingIndicator from '@/components/loadingIndicator';
 import Card, { CardBody, CardFooter, CardHeader } from '@/components/card';
 import PasswordInput from '@/components/passwordInput';
 import { z } from 'zod';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 export const Route = createFileRoute('/_authLayout/login')({
   component: () => <Login />,
@@ -26,15 +24,13 @@ const LoginSchema = z.object({
 type Schema = z.infer<typeof LoginSchema>
 
 function Login() {
-  const { logIn, isAuthenticated, signInWithGoogle } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
+  const { logIn, isAuthenticated, signInWithGoogle, isLoading } = useAuth();
   const router = useRouter();
   const { toast } = useToast()
-  const mutation = useMutation({ mutationFn: login })
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
-    disabled: mutation.isPending,
+    disabled: isLoading,
     defaultValues: {
       email: "",
       password: "",
@@ -42,28 +38,61 @@ function Login() {
   })
 
   const onSubmit = async (fields: Schema) => {
-    const response = await mutation.mutateAsync({ email: fields.email, password: fields.password });
+    try {
+      // Ensure that the logIn function returns a promise
+      await logIn(fields.email, fields.password);
+    } catch (error: any) {
 
-    if (response.error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: response.error,
-      })
-    } else if (response.data) {
-      const { data } = response.data;
-      logIn(data.user);
+      if (error.code) {
+        switch (error.code) {
+          case "auth/wrong-password":
+            toast({
+              variant: "destructive",
+              title: "Error",
+              description: "Incorrect password, please try again.",
+            });
+            break;
+          case "auth/user-not-found":
+            toast({
+              variant: "destructive",
+              title: "Error",
+              description: "User not found, please check your email.",
+            });
+            break;
+          case "auth/invalid-credential":
+            toast({
+              variant: "destructive",
+              title: "Error",
+              description: "El email o la contraseña son incorrectos.",
+            });
+            break;
+          default:
+            toast({
+              variant: "destructive",
+              title: "Error",
+              description: "Algo salio mal! intentelo otra vez.",
+            });
+            break;
+        }
+      } else {
+        // Handle non-auth-related errors if necessary
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "An error occurred. Please try again.",
+        });
+      }
     }
-  }
+  };
+
 
   function handleSignInWithGoogle() {
-    setIsLoading(true);
     signInWithGoogle();
   }
 
   useEffect(() => {
     if (isAuthenticated) {
-      const redirectTo = "/dashboard?tab=carbon";
+      const redirectTo = "/dashboard";
       router.history.push(redirectTo, { replace: true });
     }
   }, [isAuthenticated, router.history]);
@@ -117,8 +146,8 @@ function Login() {
                 )}
               />
               <div className='flex justify-center flex-col items-center'>
-                <Button disabled={mutation.isPending} className='w-full mb-2' type="submit">
-                  {mutation.isPending ? <LoadingIndicator className="w-4 h-4 text-primary-foreground" /> : 'Ingresar'}
+                <Button disabled={isLoading} className='w-full mb-2' type="submit">
+                  {isLoading ? <LoadingIndicator className="w-4 h-4 text-primary-foreground" /> : 'Ingresar'}
                 </Button>
               </div>
               <div className='flex justify-center flex-col items-center'>

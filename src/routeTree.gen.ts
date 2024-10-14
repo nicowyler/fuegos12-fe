@@ -11,7 +11,6 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as TermsImport } from './routes/terms'
 import { Route as FaqImport } from './routes/faq'
 import { Route as BasesImport } from './routes/bases'
 import { Route as AuthenticatedImport } from './routes/_authenticated'
@@ -22,6 +21,7 @@ import { Route as AuthLayoutRegistrationImport } from './routes/_authLayout/regi
 import { Route as AuthLayoutPasswordResetImport } from './routes/_authLayout/passwordReset'
 import { Route as AuthLayoutLoginImport } from './routes/_authLayout/login'
 import { Route as AuthLayoutForgotPasswordImport } from './routes/_authLayout/forgotPassword'
+import { Route as AuthenticatedDashboardLayoutTermsImport } from './routes/_authenticated/_dashboardLayout/terms'
 import { Route as AuthenticatedDashboardLayoutNotificationsImport } from './routes/_authenticated/_dashboardLayout/notifications'
 import { Route as AuthenticatedDashboardLayoutMisComprasImport } from './routes/_authenticated/_dashboardLayout/mis-compras'
 import { Route as AuthenticatedDashboardLayoutFaqImport } from './routes/_authenticated/_dashboardLayout/faq'
@@ -30,11 +30,6 @@ import { Route as AuthenticatedDashboardLayoutContactoImport } from './routes/_a
 import { Route as AuthenticatedDashboardLayoutMercadoPagoSuccessImport } from './routes/_authenticated/_dashboardLayout/mercado-pago/success'
 
 // Create/Update Routes
-
-const TermsRoute = TermsImport.update({
-  path: '/terms',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const FaqRoute = FaqImport.update({
   path: '/faq',
@@ -86,6 +81,12 @@ const AuthLayoutForgotPasswordRoute = AuthLayoutForgotPasswordImport.update({
   path: '/forgotPassword',
   getParentRoute: () => AuthLayoutRoute,
 } as any)
+
+const AuthenticatedDashboardLayoutTermsRoute =
+  AuthenticatedDashboardLayoutTermsImport.update({
+    path: '/terms',
+    getParentRoute: () => AuthenticatedDashboardLayoutRoute,
+  } as any)
 
 const AuthenticatedDashboardLayoutNotificationsRoute =
   AuthenticatedDashboardLayoutNotificationsImport.update({
@@ -162,13 +163,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FaqImport
       parentRoute: typeof rootRoute
     }
-    '/terms': {
-      id: '/terms'
-      path: '/terms'
-      fullPath: '/terms'
-      preLoaderRoute: typeof TermsImport
-      parentRoute: typeof rootRoute
-    }
     '/_authLayout/forgotPassword': {
       id: '/_authLayout/forgotPassword'
       path: '/forgotPassword'
@@ -239,6 +233,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardLayoutNotificationsImport
       parentRoute: typeof AuthenticatedDashboardLayoutImport
     }
+    '/_authenticated/_dashboardLayout/terms': {
+      id: '/_authenticated/_dashboardLayout/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof AuthenticatedDashboardLayoutTermsImport
+      parentRoute: typeof AuthenticatedDashboardLayoutImport
+    }
     '/_authenticated/_dashboardLayout/mercado-pago/success': {
       id: '/_authenticated/_dashboardLayout/mercado-pago/success'
       path: '/mercado-pago/success'
@@ -267,12 +268,12 @@ export const routeTree = rootRoute.addChildren({
         AuthenticatedDashboardLayoutFaqRoute,
         AuthenticatedDashboardLayoutMisComprasRoute,
         AuthenticatedDashboardLayoutNotificationsRoute,
+        AuthenticatedDashboardLayoutTermsRoute,
         AuthenticatedDashboardLayoutMercadoPagoSuccessRoute,
       }),
   }),
   BasesRoute,
   FaqRoute,
-  TermsRoute,
 })
 
 /* prettier-ignore-end */
@@ -287,8 +288,7 @@ export const routeTree = rootRoute.addChildren({
         "/_authLayout",
         "/_authenticated",
         "/bases",
-        "/faq",
-        "/terms"
+        "/faq"
       ]
     },
     "/": {
@@ -315,9 +315,6 @@ export const routeTree = rootRoute.addChildren({
     "/faq": {
       "filePath": "faq.tsx"
     },
-    "/terms": {
-      "filePath": "terms.tsx"
-    },
     "/_authLayout/forgotPassword": {
       "filePath": "_authLayout/forgotPassword.tsx",
       "parent": "/_authLayout"
@@ -343,6 +340,7 @@ export const routeTree = rootRoute.addChildren({
         "/_authenticated/_dashboardLayout/faq",
         "/_authenticated/_dashboardLayout/mis-compras",
         "/_authenticated/_dashboardLayout/notifications",
+        "/_authenticated/_dashboardLayout/terms",
         "/_authenticated/_dashboardLayout/mercado-pago/success"
       ]
     },
@@ -364,6 +362,10 @@ export const routeTree = rootRoute.addChildren({
     },
     "/_authenticated/_dashboardLayout/notifications": {
       "filePath": "_authenticated/_dashboardLayout/notifications.tsx",
+      "parent": "/_authenticated/_dashboardLayout"
+    },
+    "/_authenticated/_dashboardLayout/terms": {
+      "filePath": "_authenticated/_dashboardLayout/terms.tsx",
       "parent": "/_authenticated/_dashboardLayout"
     },
     "/_authenticated/_dashboardLayout/mercado-pago/success": {

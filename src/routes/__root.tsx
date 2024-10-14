@@ -1,5 +1,5 @@
+import { AuthContextType } from '@/auth'
 import { Toaster } from '@/components/ui/toaster'
-import { AuthContextType } from '@/types'
 import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
 
 interface MyRouterContext {

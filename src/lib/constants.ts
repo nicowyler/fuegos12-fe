@@ -10,3 +10,7 @@ export const colorClasses = [
   'bg-info',
   'bg-coaccent-foreground',
 ];
+
+export const authMessages = {
+  INVALID_LOGIN_CREDENTIALS: 'INVALID_LOGIN_CREDENTIALS',
+};

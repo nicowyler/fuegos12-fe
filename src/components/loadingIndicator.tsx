@@ -1,21 +1,21 @@
 import { cn } from '@/lib/utils';
 
 type LoadingIndicatorProps = {
-    className?: string;
+  className?: string;
 };
 
 function LoadingIndicator({ className }: LoadingIndicatorProps) {
-    return (
-        <svg
-            className={cn("spinner_V8m1", className)} // Apply the custom spinner class
-            width="24"
-            height="24"
-            stroke="#fff" // Set stroke color
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-        >
-            <style>
-                {`
+  return (
+    <svg
+      className={cn("spinner_V8m1", className)} // Apply the custom spinner class
+      width="24"
+      height="24"
+      stroke="#fff" // Set stroke color
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <style>
+        {`
           .spinner_V8m1 {
             transform-origin: center;
             animation: spinner_zKoa 2s linear infinite;
@@ -44,12 +44,12 @@ function LoadingIndicator({ className }: LoadingIndicatorProps) {
             }
           }
         `}
-            </style>
-            <g>
-                <circle cx="12" cy="12" r="9.5" fill="none" strokeWidth="3"></circle>
-            </g>
-        </svg>
-    );
+      </style>
+      <g>
+        <circle cx="12" cy="12" r="9.5" fill="none" strokeWidth="3"></circle>
+      </g>
+    </svg>
+  );
 }
 
 export default LoadingIndicator;

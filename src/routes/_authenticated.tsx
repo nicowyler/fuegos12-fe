@@ -1,15 +1,18 @@
+// src/routes/authenticatedRoute.tsx
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: async ({ context, location }) => {
-    console.debug('Checking authentication...', context.auth.isAuthenticated);
+    const authContext = context.auth;
+    console.debug('Checking authentication...', authContext.isAuthenticated);
+
     // Handle a potential loading state for async auth check
-    if (context.auth.isLoading) {
+    if (authContext.isLoading) {
       console.debug('Authentication is loading...');
       return; // Allow loading to complete
     }
 
-    if (!context.auth.isAuthenticated) {
+    if (!authContext.isAuthenticated) {
       console.debug('Not authenticated, redirecting to login...');
       throw redirect({
         to: '/login',

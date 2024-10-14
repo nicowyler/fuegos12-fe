@@ -1,12 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/terms')({
+export const Route = createFileRoute('/_authenticated/_dashboardLayout/terms')({
     component: () => <Terms />
 })
 
 function Terms() {
     return (
-        <div className="bg-gray-100 text-gray-800 p-6">
+        <div className="bg-gray-100 text-gray-800 p-6 h-[calc(100vh-64px)] overflow-auto">
             <div className="max-w-4xl mx-auto bg-white p-8 shadow-lg rounded-lg">
                 <h1 className="text-3xl font-bold mb-4 text-gray-900">Términos de Servicio</h1>
 

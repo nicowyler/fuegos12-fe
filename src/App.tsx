@@ -29,7 +29,16 @@ declare module '@tanstack/react-router' {
 const queryClient = new QueryClient();
 
 function InnerApp() {
-  const auth = useAuth()
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js').then(registration => {
+        console.log('Service Worker registered with scope:', registration.scope);
+      }).catch(error => {
+        console.error('Service Worker registration failed:', error);
+      });
+    });
+  }
+  const auth = useAuth();
   return <RouterProvider router={router} context={{ auth }} />
 }
 

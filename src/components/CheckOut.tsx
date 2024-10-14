@@ -1,14 +1,13 @@
 import { useContext, FC, ReactElement, useState } from "react";
-import { formatToArs } from '../lib/utils';
 import PayButton from "@/components/PayButton";
 import { MercadoPagoContext } from "@/hooks/MercadoPagoProvider";
-import { cn } from "@/lib/utils"
 import { useToast } from "@/components/ui/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { createPreference } from "@/lib/api/mercadoPago";
 import FireLoading from "@/components/fireLoading";
 import { TProduct } from "@/types/products.types";
 import { useAuth } from "@/hooks";
+import { cn, formatToArs } from "@/lib/utils";
 
 const Checkout: FC = (): ReactElement => {
   const { carbonData, woodData } = useContext(MercadoPagoContext);
@@ -35,7 +34,7 @@ const Checkout: FC = (): ReactElement => {
       (item): item is TProduct => item !== null && item !== undefined && item.quantity! > 0
     );
     console.log("user:: ", user);
-    await mutation.mutateAsync({ order: orderArray, userId: user?.id });
+    await mutation.mutateAsync({ order: orderArray, userId: user?.uid });
   }
 
   const shoppingCartClass = cn('absolute bottom-[-72rem] w-11/12 max-w-2xl md:min-h-40 bg-gray-800 m-auto transition transition-all duration-500 ease-in-out text-white py-4 px-6 rounded-t-lg bg-opacity-90', {

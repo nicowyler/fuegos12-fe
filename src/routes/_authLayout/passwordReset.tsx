@@ -5,22 +5,23 @@ import PasswordInput from '@/components/passwordInput';
 import { Button } from '@/components/ui/button';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/components/ui/use-toast';
-import { passwordReset } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
+import { confirmPasswordReset } from 'firebase/auth';
 import { CircleCheckBig } from 'lucide-react';
 import { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { z } from 'zod';
+import { auth } from '../../lib/firebase';
+import { useAuth } from '@/hooks';
 
-type TokenSearch = { token: string };
+type TokenSearch = { oobCode: string };
 
 export const Route = createFileRoute('/_authLayout/passwordReset')({
     validateSearch: (search: Record<string, unknown>): TokenSearch => {
         return {
-            token: (search?.token) as string || '',
+            oobCode: (search?.token) as string || '',
         };
     },
     component: () => <PasswordRecover />
@@ -33,31 +34,40 @@ const PssswordRecoverSchema = z.object({
 type Schema = z.infer<typeof PssswordRecoverSchema>
 
 function PasswordRecover() {
-    const { token } = Route.useSearch();
+    const { isLoading } = useAuth();
+    const { oobCode } = Route.useSearch();
     const router = useRouter();
     const { toast } = useToast()
-    const mutation = useMutation({ mutationFn: passwordReset })
     const [emailSent, setEmailSent] = useState(false);
 
     const form = useForm<Schema>({
         resolver: zodResolver(PssswordRecoverSchema),
-        disabled: mutation.isPending,
+        disabled: isLoading,
         defaultValues: {
             password: "",
         },
     })
 
     const onSubmit = async (fields: Schema) => {
-        const response = await mutation.mutateAsync({ token, password: fields.password });
-
-        if (response.error) {
+        if (!oobCode) {
             toast({
                 variant: "destructive",
                 title: "Error",
-                description: response.error,
+                description: 'No se encontro el token de recuperación',
             })
-        } else if (response.data) {
+            return;
+        }
+
+        try {
+            // Send the oobCode and new password to Firebase
+            await confirmPasswordReset(auth, oobCode, fields.password);
             setEmailSent(true);
+        } catch (err) {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: 'Algo salio mal al enviar la nueva contraseña',
+            })
         }
     }
 
@@ -117,8 +127,8 @@ function PasswordRecover() {
                                 )
                         }
                         <div className='w-full flex justify-center'>
-                            <Button disabled={mutation.isPending || emailSent} className='min-w-[200px]' type="submit">
-                                {mutation.isPending ? <LoadingIndicator className="w-4 h-4" /> : 'Enviar'}
+                            <Button disabled={isLoading || emailSent} className='min-w-[200px]' type="submit">
+                                {isLoading ? <LoadingIndicator className="w-4 h-4" /> : 'Enviar'}
                             </Button>
                         </div>
                     </CardBody>
