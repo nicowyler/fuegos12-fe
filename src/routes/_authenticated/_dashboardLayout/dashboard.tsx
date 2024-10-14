@@ -1,13 +1,16 @@
-import CarbonPage from '@/components/carbon'
-import Checkout from '@/components/CheckOut';
-import WoodPage from '@/components/wood'
+import React from 'react';
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useEffect, useState } from 'react';
 import TabButton from '../../../components/tabButton';
 import { fetchProducts } from '../../../lib/api/products'
 import { useQuery } from '@tanstack/react-query';
-import FireLoading from '@/components/fireLoading';
 import { useSwipeable } from 'react-swipeable';
+
+const FireLoading = React.lazy(() => import('@/components/fireLoading'));
+const CarbonPage = React.lazy(() => import('@/components/carbon'));
+const Checkout = React.lazy(() => import('@/components/CheckOut'));
+const WoodPage = React.lazy(() => import('@/components/wood'));
+
 
 type TabSearch = { tab: string };
 

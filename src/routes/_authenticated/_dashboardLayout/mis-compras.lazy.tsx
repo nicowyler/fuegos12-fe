@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createLazyFileRoute, Link } from '@tanstack/react-router';
 import { getTransactions } from '@/lib/api/transactions';
 import FireLoading from '@/components/fireLoading';
 import { Transaction, TransactionProduct } from '@/types';
@@ -8,7 +8,7 @@ import { capitalizeFirstLetter, formatDate, formatToArs } from '@/lib/utils';
 import Card, { CardHeader, CardBody } from '@/components/card'
 import { Button } from '@/components/ui/button';
 
-export const Route = createFileRoute('/_authenticated/_dashboardLayout/mis-compras')({
+export const Route = createLazyFileRoute('/_authenticated/_dashboardLayout/mis-compras')({
     component: MisCompras,
 });
 

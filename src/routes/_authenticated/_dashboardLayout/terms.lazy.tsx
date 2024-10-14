@@ -1,6 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createLazyFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/_authenticated/_dashboardLayout/terms')({
+export const Route = createLazyFileRoute('/_authenticated/_dashboardLayout/terms')({
     component: () => <Terms />
 })
 

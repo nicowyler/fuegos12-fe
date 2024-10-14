@@ -11,7 +11,7 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { useAuth } from '@/hooks';
 import { useEffect, useState } from 'react';
-import PwaInstallButton from '@/components/PwaInstallButton';
+import PWAInstallButton from '@/components/PwaInstallButton';
 
 export const Route = createFileRoute('/_authenticated/_dashboardLayout')({
     component: () => <DashboardLayout />
@@ -121,8 +121,9 @@ export default function DashboardLayout() {
                                 </Link>
 
                             </nav>
-                            <div className='absolute bottom-5 w-full'>
-                                <PwaInstallButton />
+                            <div className='absolute bottom-8 w-full'>
+                                <PWAInstallButton />
+
                                 <p className='text-sm text-primary-foreground text-center mt-5'>
                                     Fuegos 12 de Julio © {new Date().getFullYear()}
                                 </p>

@@ -8,11 +8,11 @@ import { toast } from '@/components/ui/use-toast'
 import { sendContactMessage } from '@/lib/api/contact'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
-import { createFileRoute } from '@tanstack/react-router'
+import { createLazyFileRoute } from '@tanstack/react-router'
 import { FormProvider, useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-export const Route = createFileRoute('/_authenticated/_dashboardLayout/contacto')({
+export const Route = createLazyFileRoute('/_authenticated/_dashboardLayout/contacto')({
     component: () => <Contacto />
 })
 const ContactSchema = z.object({

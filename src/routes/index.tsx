@@ -1,7 +1,7 @@
 import FireLoading from '@/components/fireLoading';
 import { cn } from '@/lib/utils'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTimeout } from 'usehooks-ts'
 
 export const Route = createFileRoute('/')({
@@ -16,8 +16,17 @@ export default function InitialScreen() {
         router.history.push('/dashboard', { replace: true });
     }
 
-    useTimeout(() => setBgAnim(true), 2500)
-    useTimeout(navigate, 4000)
+    useTimeout(() => setBgAnim(true), 500)
+
+    useEffect(() => {
+        if (bgAnim) {
+            const timeoutId = setTimeout(() => {
+                navigate();
+            }, 1000);
+
+            return () => clearTimeout(timeoutId); // Cleanup timeout when component unmounts
+        }
+    }, [bgAnim, navigate]);
 
     return (
         <div className='h-screen w-full flex flex-col bg-foreground relative'>
