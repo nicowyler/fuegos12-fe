@@ -1,6 +1,6 @@
-import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
-import { zodResolver, } from '@hookform/resolvers/zod';
-import { useForm } from "react-hook-form"
+import { createFileRoute, Link, useSearch, useRouter } from '@tanstack/react-router';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from "react-hook-form";
 import { useAuth } from '@/hooks';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,35 +14,37 @@ import { useEffect } from 'react';
 
 export const Route = createFileRoute('/_authLayout/login')({
   component: () => <Login />,
-})
+});
 
 const LoginSchema = z.object({
   email: z.string().min(1, { message: "Tienes que completar este campo!" }).email("Ingresa un email valido!"),
   password: z.string().min(3, { message: "Tiene que tener al menos 3 caracteres!" }),
 });
 
-type Schema = z.infer<typeof LoginSchema>
+type Schema = z.infer<typeof LoginSchema>;
 
 function Login() {
   const { logIn, isAuthenticated, signInWithGoogle, isLoading } = useAuth();
   const router = useRouter();
-  const { toast } = useToast()
+  const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof LoginSchema>>({
+  // Use `useSearch` to get the redirect URL, if available
+  const search = useSearch({ strict: false }) as { redirect?: string };
+  const redirectTo = search.redirect ?? "/dashboard";
+
+  const form = useForm<Schema>({
     resolver: zodResolver(LoginSchema),
     disabled: isLoading,
     defaultValues: {
       email: "",
       password: "",
     },
-  })
+  });
 
   const onSubmit = async (fields: Schema) => {
     try {
-      // Ensure that the logIn function returns a promise
       await logIn(fields.email, fields.password);
     } catch (error: any) {
-
       if (error.code) {
         switch (error.code) {
           case "auth/wrong-password":
@@ -75,7 +77,6 @@ function Login() {
             break;
         }
       } else {
-        // Handle non-auth-related errors if necessary
         toast({
           variant: "destructive",
           title: "Error",
@@ -85,17 +86,15 @@ function Login() {
     }
   };
 
-
   function handleSignInWithGoogle() {
     signInWithGoogle();
   }
 
   useEffect(() => {
     if (isAuthenticated) {
-      const redirectTo = "/dashboard";
       router.history.push(redirectTo, { replace: true });
     }
-  }, [isAuthenticated, router.history]);
+  }, [isAuthenticated, redirectTo, router.history]);
 
   return (
     <Form {...form}>
@@ -106,7 +105,7 @@ function Login() {
               Ingresa a tu cuenta
             </h2>
           </CardHeader>
-          <CardBody className='w-full flex px-10 h-full py-3' >
+          <CardBody className='w-full flex px-10 h-full py-3'>
             <div className='w-full space-y-4'>
               <FormField
                 control={form.control}
@@ -127,9 +126,7 @@ function Login() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel id='password' className='flex justify-between items-end mt-5'>
-                      <span>
-                        Contraseña
-                      </span>
+                      <span>Contraseña</span>
                       <Link to="/forgotPassword">
                         <Button className='text-primary p-0 m-0 h-0' variant="link">
                           Olvidaste tu contraseña?
@@ -162,14 +159,11 @@ function Login() {
                     : (
                       <>
                         <svg className="mr-2 -ml-1 w-4 h-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path></svg>
-                        <span>
-                          Iniciar con google
-                        </span>
+                        <span>Iniciar con google</span>
                       </>
                     )
                   }
                 </Button>
-
               </div>
             </div>
           </CardBody>
@@ -188,7 +182,5 @@ function Login() {
         </Card>
       </form>
     </Form>
-  )
+  );
 }
-
-

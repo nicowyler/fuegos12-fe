@@ -4,9 +4,13 @@ import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: async ({ context, location }) => {
     const authContext = context.auth;
-    console.debug('Checking authentication...', authContext.isAuthenticated);
 
-    // Handle a potential loading state for async auth check
+    // Allow unauthenticated access to the Mercado Pago success route
+    if (location.pathname === '/mercado-pago/success') {
+      console.debug('Allowing access to Mercado Pago success route');
+      return context;
+    }
+
     if (authContext.isLoading) {
       console.debug('Authentication is loading...');
       return; // Allow loading to complete
@@ -17,7 +21,6 @@ export const Route = createFileRoute('/_authenticated')({
       throw redirect({
         to: '/login',
         search: {
-          // Use the current location to power a redirect after login
           redirect: location.href,
         },
       });
