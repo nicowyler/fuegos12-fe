@@ -5,6 +5,7 @@ import TabButton from '../../../components/tabButton';
 import { fetchProducts } from '../../../lib/api/products'
 import { useQuery } from '@tanstack/react-query';
 import { useSwipeable } from 'react-swipeable';
+import { useLocationStore } from '@/store/location.store';
 
 const FireLoading = React.lazy(() => import('@/components/fireLoading'));
 const CarbonPage = React.lazy(() => import('@/components/carbon'));
@@ -32,10 +33,16 @@ export const Route = createFileRoute('/_authenticated/_dashboardLayout/dashboard
 })
 
 export default function ProductsList() {
+  const { storeId } = useLocationStore(); // Zustand action
+
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['products'],
-    queryFn: () => fetchProducts(),
+    queryKey: ['products', storeId],
+    queryFn: () => {
+      if (!storeId) throw new Error('Store ID is required');
+      return fetchProducts(storeId);
+    },
   })
+
   const [tabPosition, setTabPosition] = useState("0%");
   const { tab } = Route.useSearch();
   const router = useRouter();

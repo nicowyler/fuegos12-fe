@@ -1,5 +1,6 @@
 import { AuthContextType } from '@/auth'
 import { Toaster } from '@/components/ui/toaster'
+import { useStoreIdInitializer } from '@/hooks/storeInitializer'
 import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
 
 interface MyRouterContext {
@@ -7,10 +8,13 @@ interface MyRouterContext {
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
-    component: () => (
-        <>
-            <Outlet />
-            <Toaster />
-        </>
-    ),
+    component: () => {
+        useStoreIdInitializer();
+        return (
+            <>
+                <Outlet />
+                <Toaster />
+            </>
+        )
+    }
 })

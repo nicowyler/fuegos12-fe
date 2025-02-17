@@ -6,16 +6,12 @@ export async function createPreference({
   order,
   userId,
 }: {
-  order: TProduct[];
+  order: Omit<TProduct, 'discounts'>[];
   userId: string | undefined;
 }) {
-  return await axiosInstance.post(
-    CREATE_PREFERENCE,
-    JSON.stringify({ order, userId }),
-    {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }
-  );
+  return await axiosInstance.post(CREATE_PREFERENCE, JSON.stringify({ order, userId }), {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 }

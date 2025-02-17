@@ -8,12 +8,13 @@ import { cn, formatToArs } from '@/lib/utils';
 
 type ProductsProps = {
     product: TProduct,
+    img: string,
     onProductSelected: (id: string) => void,
     onProductRemoved: (id: string) => void,
     onRemoveAllProducts: () => void
 };
 
-const Products: FC<ProductsProps> = ({ product, onProductSelected, onProductRemoved, onRemoveAllProducts }: ProductsProps): ReactElement => {
+const Products: FC<ProductsProps> = ({ product, img, onProductSelected, onProductRemoved, onRemoveAllProducts }: ProductsProps): ReactElement => {
     const [animateNumber, setAnimateNumber] = useState([false, ""]);
     const [removeAnim, setRemoveAnim] = useState([false, ""]);
     const [, setProductClicked] = useState(false);
@@ -81,15 +82,15 @@ const Products: FC<ProductsProps> = ({ product, onProductSelected, onProductRemo
                                 </div>
                                 <div className='w-full h-full min-h-[145px] flex justify-center items-center pointer-events-none'>
                                     <LoadingImage
-                                        src={product.picture_url}
+                                        src={img}
                                         alt={product.description}
                                         aspectRatio='3/2'
                                     />
                                 </div>
                             </div>
                             <div className='flex justify-between items-center px-10 py-2 border border-gray-200 rounded-b'>
-                                <h3 className="text-md font-bold  text-gray-500">Precio</h3>
-                                <div className="text-sm text-gray-500 font-bold">{formatToArs(product.unit_price)}</div>
+                                <h3 className="text-md font-bold text-gray-500">Precio</h3>
+                                <div className="text-xl text-gray-500 font-extrabold">{formatToArs(product.price)}</div>
                             </div>
                         </div>
 

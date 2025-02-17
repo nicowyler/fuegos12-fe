@@ -63,12 +63,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIsLoading(true);
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            console.log("VERIFIED :::: ", userCredential.user.emailVerified);
             if (userCredential.user.emailVerified) {
                 setUser(userCredential.user);
                 setIsAuthenticated(true);
             } else {
-                console.log("Email no verificado");
                 setUser(null);
                 setIsAuthenticated(false);
                 toast({

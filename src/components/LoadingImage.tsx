@@ -21,7 +21,6 @@ export default function LoadingImage({ src, alt, height, width, aspectRatio, cla
         fetch(src)
             .then((response) => response)
             .then((data) => {
-                console.log(data)
                 setImgSrc(data.url)
             })
             .then(() => setLoadingImage(false))

@@ -53,7 +53,6 @@ function Registration() {
       const user = await signUp(fields.email, fields.password);
 
       if (user) {
-        console.log("user", user);
         const token = await user.getIdToken();
         const response = await mutation.mutateAsync({
           uid: user?.uid,
