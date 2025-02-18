@@ -25,6 +25,7 @@ import { Route as AuthLayoutLoginImport } from './routes/_authLayout/login'
 import { Route as AuthLayoutForgotPasswordImport } from './routes/_authLayout/forgotPassword'
 import { Route as AuthenticatedDashboardLayoutDashboardImport } from './routes/_authenticated/_dashboardLayout/dashboard'
 import { Route as AuthenticatedDashboardLayoutMercadoPagoSuccessImport } from './routes/_authenticated/_dashboardLayout/mercado-pago/success'
+import { Route as AuthenticatedDashboardLayoutMercadoPagoFailureImport } from './routes/_authenticated/_dashboardLayout/mercado-pago/failure'
 
 // Create Virtual Routes
 
@@ -146,6 +147,12 @@ const AuthenticatedDashboardLayoutMercadoPagoSuccessRoute =
     getParentRoute: () => AuthenticatedDashboardLayoutRoute,
   } as any)
 
+const AuthenticatedDashboardLayoutMercadoPagoFailureRoute =
+  AuthenticatedDashboardLayoutMercadoPagoFailureImport.update({
+    path: '/mercado-pago/failure',
+    getParentRoute: () => AuthenticatedDashboardLayoutRoute,
+  } as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -255,6 +262,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardLayoutTermsLazyImport
       parentRoute: typeof AuthenticatedDashboardLayoutImport
     }
+    '/_authenticated/_dashboardLayout/mercado-pago/failure': {
+      id: '/_authenticated/_dashboardLayout/mercado-pago/failure'
+      path: '/mercado-pago/failure'
+      fullPath: '/mercado-pago/failure'
+      preLoaderRoute: typeof AuthenticatedDashboardLayoutMercadoPagoFailureImport
+      parentRoute: typeof AuthenticatedDashboardLayoutImport
+    }
     '/_authenticated/_dashboardLayout/mercado-pago/success': {
       id: '/_authenticated/_dashboardLayout/mercado-pago/success'
       path: '/mercado-pago/success'
@@ -283,6 +297,7 @@ export const routeTree = rootRoute.addChildren({
         AuthenticatedDashboardLayoutContactoLazyRoute,
         AuthenticatedDashboardLayoutMisComprasLazyRoute,
         AuthenticatedDashboardLayoutTermsLazyRoute,
+        AuthenticatedDashboardLayoutMercadoPagoFailureRoute,
         AuthenticatedDashboardLayoutMercadoPagoSuccessRoute,
       }),
   }),
@@ -354,6 +369,7 @@ export const routeTree = rootRoute.addChildren({
         "/_authenticated/_dashboardLayout/contacto",
         "/_authenticated/_dashboardLayout/mis-compras",
         "/_authenticated/_dashboardLayout/terms",
+        "/_authenticated/_dashboardLayout/mercado-pago/failure",
         "/_authenticated/_dashboardLayout/mercado-pago/success"
       ]
     },
@@ -375,6 +391,10 @@ export const routeTree = rootRoute.addChildren({
     },
     "/_authenticated/_dashboardLayout/terms": {
       "filePath": "_authenticated/_dashboardLayout/terms.lazy.tsx",
+      "parent": "/_authenticated/_dashboardLayout"
+    },
+    "/_authenticated/_dashboardLayout/mercado-pago/failure": {
+      "filePath": "_authenticated/_dashboardLayout/mercado-pago/failure.tsx",
       "parent": "/_authenticated/_dashboardLayout"
     },
     "/_authenticated/_dashboardLayout/mercado-pago/success": {

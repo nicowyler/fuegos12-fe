@@ -14,8 +14,8 @@ const Checkout: FC = (): ReactElement => {
   const { carbonData, woodData } = useContext(MercadoPagoContext);
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const { data: discountCarbon, isLoading: discountCarbonLoading, setProductDiscount: setCarbonDiscount } = useDiscountCalc('CARBON');
-  const { data: discountWood, isLoading: discountWoodLoading, setProductDiscount: setWoodDiscount } = useDiscountCalc('WOOD');
+  const { data: discountCarbon, isLoading: discountCarbonLoading, setProductDiscount: setCarbonDiscount } = useDiscountCalc();
+  const { data: discountWood, isLoading: discountWoodLoading, setProductDiscount: setWoodDiscount } = useDiscountCalc();
 
   const mutation = useMutation({
     mutationFn: createPreference,

@@ -71,7 +71,7 @@ export default function CarbonPage({ defaultproduct }: { defaultproduct: TProduc
                 onProductRemoved={productRemove}
                 onRemoveAllProducts={() => clearProsucts()}
             />
-            <Discounts type={'CARBON'} discounts={product.discounts} />
+            {product && product?.discounts?.length > 0 && <Discounts discounts={product.discounts} />}
             {showDaysDiscount([1, 2, 3, 4]) && discountDays && <DiscountDays discountDays={discountDays} isLoading={isLoading} />}
         </>
     )

@@ -1,5 +1,4 @@
 import { calculateDiscount } from '@/lib/api/products';
-import { ProductType } from '@/types/products.types';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 
@@ -8,7 +7,7 @@ type PrdouctDiscount = {
   quantity: number;
 };
 
-export function useDiscountCalc(type: ProductType) {
+export function useDiscountCalc() {
   const [productDiscount, setProductDiscount] = useState<PrdouctDiscount>();
   const { data, isLoading } = useQuery({
     queryKey: ['products', productDiscount],
